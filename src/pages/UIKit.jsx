@@ -6,7 +6,7 @@ import { AuthButton, AuthNotice, CodeField, EmailField } from '../components/Aut
 import { FormField, SelectField } from '../components/FormsUI.jsx';
 import { StatusBadge, DateStrip, SlotPicker, ScheduleDay, AgendaList, FilterChips } from '../components/SchedulingUI.jsx';
 import { PersonCard, SettingsRow, EmptyState, LoadingState } from '../components/CardsUI.jsx';
-import { PageHeader, StepIndicator, TabBar } from '../components/NavigationUI.jsx';
+import { AppHeader, PageHeader, StepIndicator, TabBar } from '../components/NavigationUI.jsx';
 import BottomSheet from '../components/BottomSheet.jsx';
 import { Button } from '../components/ui/button.jsx';
 import { Checkbox } from '../components/ui/checkbox.jsx';
@@ -42,12 +42,12 @@ export default function UIKit() {
         <Specimen title="Sélection et photo" source="FormsUI.jsx · ui/checkbox.jsx"><SelectField label="Spécialité" options={[{ value: 'general', label: 'Médecine générale' }, { value: 'cardiology', label: 'Cardiologie' }]} /><FormField label="Photo de profil" type="file" accept="image/png,image/jpeg" hint="JPG ou PNG ; validation de taille côté serveur." /><div className="kit-check"><Checkbox id="kit-checkbox" /><Label htmlFor="kit-checkbox">Avec disponibilité uniquement</Label></div></Specimen>
       </div></section>
       <section id="navigation" className="kit-section"><h2>Navigation</h2><p>Aucune tab bar sur les écrans email et OTP.</p><div className="kit-grid">
-        <Specimen title="En-tête et progression" source="NavigationUI.jsx"><PageHeader title="Mon planning" onBack={() => setNotice('Retour de démonstration.')} /><StepIndicator current={2} total={2} /></Specimen>
+        <Specimen title="En-tête et progression" source="NavigationUI.jsx"><AppHeader user={{ firstName: 'Claire', lastName: 'Martin' }} /><PageHeader title="Mon planning" onBack={() => setNotice('Retour de démonstration.')} /><StepIndicator current={2} total={2} /></Specimen>
         <Specimen title="Navigation patient" source="NavigationUI.jsx · TabBar"><div className="kit-tab-preview"><TabBar items={patientNav} /></div></Specimen>
         <Specimen title="Navigation médecin" source="NavigationUI.jsx · TabBar"><div className="kit-tab-preview"><TabBar items={[patientNav[0], { to: '/planning', label: 'Planning', icon: CalendarDays }, { to: '/demandes', label: 'Demandes', icon: Stethoscope, count: 2 }, patientNav[2]]} /></div></Specimen>
       </div></section>
       <section id="cards" className="kit-section"><h2>Cartes et statuts</h2><p>Personnes, résumés de rendez-vous, paramètres et retours.</p><div className="kit-grid">
-        <Specimen title="Identité et rendez-vous" source="CardsUI.jsx"><PersonCard name="Dr Claire · exemple" subtitle="Médecine générale" onClick={() => setNotice('Fiche de démonstration.')} /><PersonCard name="Demande · exemple" subtitle="Mercredi à 14:30" status="pending"><p>Cabinet · Brazzaville</p></PersonCard></Specimen>
+        <Specimen title="Identité et rendez-vous" source="CardsUI.jsx"><PersonCard name="Dr Claire Martin · exemple" subtitle="Médecine générale" onClick={() => setNotice('Fiche de démonstration.')} /><PersonCard name="Thomas Dupont · exemple" subtitle="Mercredi à 14:30" status="pending"><p>Cabinet · Brazzaville</p></PersonCard></Specimen>
         <Specimen title="Paramètres" source="CardsUI.jsx · SettingsRow"><SettingsRow icon={UserRound} title="Mes informations" description="Nom, email, téléphone" onClick={() => setSheet('mode')} /><SettingsRow icon={Shield} title="Confidentialité" description="Visibilité du profil" onClick={() => setNotice('Paramètre de démonstration.')} /></Specimen>
         <Specimen title="Statuts et retours" source="SchedulingUI.jsx · AuthUI.jsx"><div className="kit-badges">{['pending', 'confirmed', 'declined', 'past', 'available'].map(status => <StatusBadge key={status} status={status} />)}</div><AuthNotice error>Le service ne répond pas. Réessayez.</AuthNotice><LoadingState /><EmptyState title="Aucune demande" description="Vos demandes apparaîtront ici." /></Specimen>
       </div></section>

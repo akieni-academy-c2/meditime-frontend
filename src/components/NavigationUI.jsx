@@ -1,9 +1,11 @@
-import { ArrowLeft, UserRound } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { Link, NavLink } from 'react-router-dom';
 import { Brand } from './Brand.jsx';
+import PersonAvatar from './PersonAvatar.jsx';
 
-export function AppHeader() {
-  return <header className="app-header"><Brand /><Link className="profile-shortcut" to="/profil" aria-label="Ouvrir mon profil"><UserRound size={23} aria-hidden="true" /></Link></header>;
+export function AppHeader({ user }) {
+  const name = [user?.firstName, user?.lastName].filter(Boolean).join(' ') || user?.email?.split('@')[0];
+  return <header className="app-header"><Brand /><Link className="profile-shortcut" to="/profil" aria-label="Ouvrir mon profil"><PersonAvatar name={name} avatarUrl={user?.avatarUrl} className="header-avatar" /></Link></header>;
 }
 export function PageHeader({ title, onBack, action }) {
   return <header className="page-header">{onBack && <button type="button" onClick={onBack} aria-label="Retour"><ArrowLeft size={24} /></button>}<h1>{title}</h1>{action}</header>;
