@@ -48,7 +48,14 @@ export default function Login() {
     setBusy(true); setError(''); setNotice('');
     try { acceptSession(await api(path, { method: 'POST', body })); setCode(''); }
     catch (err) {
-      setError(err.code === 'EMAIL_VERIFICATION_REQUIRED' ? 'Utilisez le code email pour vous connecter à ce compte. La liaison Google sera disponible dans une prochaine version.' : err.message);
+      const googleErrors = {
+        EMAIL_VERIFICATION_REQUIRED: 'Une vérification de votre adresse email est nécessaire pour lier ce compte à Google. Vous pouvez vous connecter par code email.',
+        INVALID_GOOGLE_TOKEN: 'Votre connexion Google a expiré ou est invalide. Réessayez avec Google.',
+        GOOGLE_EMAIL_UNVERIFIED: 'Votre adresse email n’est pas vérifiée par Google. Vérifiez-la dans votre compte Google ou connectez-vous par code email.',
+        GOOGLE_EMAIL_MISMATCH: 'Utilisez le compte Google correspondant à votre compte MediTime connecté.',
+        GOOGLE_NOT_CONFIGURED: 'La connexion Google est momentanément indisponible. Réessayez plus tard ou connectez-vous par code email.',
+      };
+      setError(path === '/auth/google' ? googleErrors[err.code] || err.message : err.message);
     } finally { setBusy(false); }
   }
 
@@ -82,6 +89,6 @@ export default function Login() {
       <AuthButton disabled={busy || code.length !== 6 || expired}>{busy && !resending ? 'Vérification…' : 'Continuer'}</AuthButton>
     </form>}
     <div className="security-section"><SecurityArtwork email={step === 'code'} /><p><strong>{step === 'code' ? 'Un accès plus simple' : 'Vos données sont protégées'}</strong><br />{step === 'code' ? 'Sans mot de passe, plus rapide, plus sûr.' : 'Connexion sécurisée et sans mot de passe.'}</p></div>
-    {step === 'email' && <p className="demo-note">Version de démonstration : envoi email limité à l’adresse autorisée. Google en cours de validation.</p>}
+    {step === 'email' && <p className="demo-note">Version de démonstration : envoi email limité à l’adresse autorisée.</p>}
   </section>;
 }
