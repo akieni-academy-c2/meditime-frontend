@@ -28,6 +28,8 @@ import { AppHeader, PageHeader, TabBar, StepIndicator } from '@/components/Navig
 - `FormField` : `label`, `hint`, `error`, `icon`, `multiline` et propriétés natives input/textarea. Les identifiants sont générés automatiquement.
 - `SelectField` : `label`, `options=[{value,label}]`, `value`, `onValueChange`.
 - `PersonCard` : `name`, `subtitle`, `avatarUrl`, `status`, `onClick`, `children`. Sans `onClick`, la carte est un article.
+- `PersonAvatar` (`components/PersonAvatar.jsx`) : `name`, `avatarUrl`, `className`. Photo cadrée si disponible, sinon initiales du prénom et du nom via le fallback shadcn, y compris lorsque l’image ne charge pas. Les titres Dr/Docteur sont ignorés ; sans nom, affiche `?`. À accompagner du nom visible ou d’un libellé accessible sur le lien parent.
+- `AppHeader` : `user={firstName,lastName,email,avatarUrl}`. Le raccourci de profil utilise le même avatar, avec le préfixe email si le nom n’est pas renseigné.
 - `StatusBadge` : `pending`, `confirmed`, `declined`, `past`, `available`.
 - `DateStrip` : `dates=[{value,day,date,label}]`, `value`, `onChange`. `label` décrit la date complète.
 - `SlotPicker` : `slots=[{value,label,disabled}]`, `value`, `onChange`.

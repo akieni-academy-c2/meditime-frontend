@@ -12,7 +12,7 @@ export default function AppShell() {
   if (!account) return <Navigate to="/connexion" replace />;
 
   return <div className="app-shell">
-    <AppHeader />
+    <AppHeader user={account.user} />
     <main className="app-content" id="main-content"><Outlet /></main>
     <TabBar items={[{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/rendez-vous', label: 'Rendez-vous', icon: CalendarDays }, { to: '/profil', label: 'Profil', icon: UserRound }]} />
   </div>;

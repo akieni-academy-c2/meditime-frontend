@@ -1,9 +1,9 @@
-import { ChevronRight, UserRound, LoaderCircle } from 'lucide-react';
-import { Avatar, AvatarImage, AvatarFallback } from './ui/avatar.jsx';
+import { ChevronRight, LoaderCircle } from 'lucide-react';
+import PersonAvatar from './PersonAvatar.jsx';
 import { StatusBadge } from './SchedulingUI.jsx';
 
 export function PersonCard({ name, subtitle, avatarUrl, status, children, onClick }) {
-  const content = <><Avatar className="person-avatar"><AvatarImage src={avatarUrl} alt="" /><AvatarFallback><UserRound size={25} aria-hidden="true" /></AvatarFallback></Avatar><div className="person-details"><h3>{name}</h3><p>{subtitle}</p>{children}</div>{status && <StatusBadge status={status} />}{onClick && <ChevronRight size={19} aria-hidden="true" />}</>;
+  const content = <><PersonAvatar name={name} avatarUrl={avatarUrl} /><div className="person-details"><h3>{name}</h3><p>{subtitle}</p>{children}</div>{status && <StatusBadge status={status} />}{onClick && <ChevronRight size={19} aria-hidden="true" />}</>;
   return onClick ? <button type="button" className="person-card" onClick={onClick}>{content}</button> : <article className="person-card">{content}</article>;
 }
 
