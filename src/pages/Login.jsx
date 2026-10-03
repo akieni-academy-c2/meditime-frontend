@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ArrowLeft, Check, LogOut } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../lib/api.js';
 import GoogleButton from '../components/GoogleButton.jsx';
@@ -7,7 +8,7 @@ import { Brand, SecurityArtwork } from '../components/Brand.jsx';
 import { AuthButton, AuthLoading, AuthNotice, CodeField, EmailField } from '../components/AuthUI.jsx';
 
 export default function Login() {
-  const { account, acceptSession, loading, error: sessionError, refresh, logout } = useAuth();
+  const { account, acceptSession, loading, error: sessionError, refresh } = useAuth();
   const [step, setStep] = useState('email');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
@@ -59,18 +60,9 @@ export default function Login() {
     } finally { setBusy(false); }
   }
 
-  async function disconnect() {
-    setBusy(true); setError('');
-    try { await logout(); setStep('email'); setCode(''); setNotice(''); }
-    catch (err) { setError(err.message); }
-    finally { setBusy(false); }
-  }
-
   if (loading) return <AuthLoading />;
   if (sessionError) return <section className="auth-screen status-screen"><Brand /><h1>Le service est indisponible</h1><AuthNotice error>{sessionError}</AuthNotice><AuthButton onClick={() => refresh()}>Réessayer</AuthButton></section>;
-  if (account) return <section className="auth-screen status-screen"><Brand /><div className="success-symbol"><Check size={36} /></div><h1>Vous êtes connecté !</h1><p className="auth-intro">Votre connexion à MediTime a réussi. Les autres écrans seront disponibles dans une prochaine version.</p>
-    {error && <AuthNotice error>{error}</AuthNotice>}<AuthButton variant="outline" disabled={busy} onClick={disconnect}><LogOut size={18} />{busy ? 'Déconnexion…' : 'Se déconnecter'}</AuthButton>
-  </section>;
+  if (account) return <Navigate to="/accueil" replace />;
 
   return <section className={`auth-screen ${step === 'code' ? 'code-screen' : 'email-screen'}`}>
     {step === 'code' && <button className="back-button" aria-label="Modifier mon email" disabled={busy} onClick={() => { setStep('email'); setCode(''); setError(''); setNotice(''); }}><ArrowLeft size={24} /></button>}

@@ -15,7 +15,7 @@ npm run build
 npm run preview
 ```
 
-Le build est dans `dist/`. Les écrans email et OTP reprennent la maquette. La connexion aboutit à un écran de succès, sans profil ni autre parcours. Au-delà de 1024 px, un message invite à utiliser un téléphone ; l'interface mobile reste centrée sur tablette. Pas de navigation basse.
+Le build est dans `dist/`. Les écrans email et OTP reprennent la maquette. Les connexions email et Google redirigent vers `/accueil`. La structure patient comprend un en-tête, le contenu principal et une navigation basse Accueil / Rendez-vous / Profil. Recherche, rendez-vous et profil affichent un contenu provisoire explicite ; la déconnexion fonctionne depuis Profil. Les routes de cet espace nécessitent une session. Au-delà de 1024 px, un message invite à utiliser un téléphone ; l'interface mobile reste centrée sur tablette.
 
 Le UI kit se consulte en développement sur `/ui-kit` : logo, champs, OTP à six cases, boutons et messages. Les composants shadcn sont dans `src/components/ui`, les adaptations MediTime dans `src/components/AuthUI.jsx` et les couleurs/espacements dans `src/styles.css`.
 
