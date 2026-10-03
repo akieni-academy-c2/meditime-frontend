@@ -8,6 +8,7 @@ import { Brand } from './components/Brand.jsx';
 import AppShell from './components/AppShell.jsx';
 import Home from './pages/Home.jsx';
 import Placeholder from './pages/Placeholder.jsx';
+import InstallAfterLogin from './pwa/InstallAfterLogin.jsx';
 
 export default function App() {
   const location = useLocation();
@@ -31,5 +32,5 @@ export default function App() {
       <Route path="/recherche" element={<Placeholder title="Recherche de médecins" description="Vous pourrez rechercher un médecin par spécialité et consulter ses disponibilités." />} />
     </Route>
     <Route path="*" element={<Navigate to="/connexion" replace />} />
-  </Routes></AuthProvider></div>;
+  </Routes><InstallAfterLogin /></AuthProvider></div>;
 }

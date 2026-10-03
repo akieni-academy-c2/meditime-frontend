@@ -24,3 +24,11 @@ La session utilise un cookie HttpOnly avec `credentials: 'include'`. Le CSRF res
 Resend est limité à l'adresse autorisée du compte de démonstration. Google reste en mode test et nécessite une recette réelle. Un hébergement futur devra servir `index.html` pour les routes, autoriser l'origine dans CORS et Google et utiliser `Cross-Origin-Opener-Policy: same-origin-allow-popups`. Vérifier les cookies entre domaines avant déploiement.
 
 Contribution : branche de travail avec issue et PR vers `develop`. Validation manuelle uniquement : OTP, renvoi, erreurs, restauration de session, déconnexion, popup Google, clavier, affichage mobile et message desktop, puis build. Aucun framework ni suite de tests automatisés.
+
+### Installation mobile (PWA)
+
+Le manifeste `/manifest.webmanifest` ouvre `/accueil` en mode autonome, avec des icônes adaptées et une barre système blanche. En production, servir le site en HTTPS avec le repli SPA habituel vers `index.html`.
+
+Après une connexion ou la restauration d’une session, `InstallAfterLogin` propose un sheet. Sa fermeture est mémorisée pour l’onglet courant. Aucune proposition dans l’application déjà ouverte en mode autonome. Le bouton utilise `beforeinstallprompt` quand disponible ; sinon il affiche les étapes du menu du navigateur, notamment le partage sur iOS. La disponibilité de l’invite native dépend du navigateur et de ses critères d’engagement.
+
+`InstallSheet` est réutilisable et son aperçu est disponible dans le UI kit. L’installation n’ajoute aucun service worker, cache ou fonctionnement hors ligne. Recette sur téléphone : connexion, installation via le navigateur, ouverture depuis l’écran d’accueil, vérification de la zone sûre et absence de nouvelle invitation dans l’application installée.
