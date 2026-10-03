@@ -1,8 +1,9 @@
 import { CalendarDays, House, UserRound } from 'lucide-react';
-import { Link, Navigate, NavLink, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { AuthButton, AuthLoading, AuthNotice } from './AuthUI.jsx';
 import { Brand } from './Brand.jsx';
+import { AppHeader, TabBar } from './NavigationUI.jsx';
 
 export default function AppShell() {
   const { account, loading, error, refresh } = useAuth();
@@ -11,11 +12,8 @@ export default function AppShell() {
   if (!account) return <Navigate to="/connexion" replace />;
 
   return <div className="app-shell">
-    <header className="app-header"><Brand /><Link className="profile-shortcut" to="/profil" aria-label="Ouvrir mon profil"><UserRound size={23} aria-hidden="true" /></Link></header>
+    <AppHeader />
     <main className="app-content" id="main-content"><Outlet /></main>
-    <nav className="tab-bar" aria-label="Navigation principale">
-      {[['/accueil', 'Accueil', House], ['/rendez-vous', 'Rendez-vous', CalendarDays], ['/profil', 'Profil', UserRound]].map(([to, label, Icon]) =>
-        <NavLink key={to} to={to}><Icon size={25} aria-hidden="true" /><span>{label}</span></NavLink>)}
-    </nav>
+    <TabBar items={[{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/rendez-vous', label: 'Rendez-vous', icon: CalendarDays }, { to: '/profil', label: 'Profil', icon: UserRound }]} />
   </div>;
 }
