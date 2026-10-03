@@ -101,8 +101,8 @@ h1, h2 { text-wrap: balance; }
 .section-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .section-heading > a { font-size: .8rem; color: var(--primary); }
 .specialty-list { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin-top: 16px; }
-.specialty-list a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; min-height: 94px; border-radius: 16px; background: var(--secondary); color: #514f88; }
-.specialty-list a:first-child { background: #eee7ff; color: var(--primary); }
+.specialty-list a, .specialty-preview { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 94px; border-radius: 16px; background: var(--secondary); color: #514f88; }
+.specialty-list a:first-child, .specialty-preview:first-child { background: #eee7ff; color: var(--primary); }
 .specialty-list span { font-size: .62rem; }
 .page-placeholder { margin: 20px 0 24px; padding: 28px 20px; border: 1px solid var(--border); border-radius: 16px; text-align: center; }
 .page-placeholder > svg { margin: 0 auto 14px; color: var(--primary); }
