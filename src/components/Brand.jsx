@@ -1,10 +1,5 @@
 export function Brand() {
-  return <div className="brand" aria-label="MediTime"><svg width="48" height="44" viewBox="0 0 56 50" aria-hidden="true">
-    <defs><linearGradient id="brand-left" x1="0" y1="0" x2="1" y2="1"><stop stopColor="#bda7ff" /><stop offset="1" stopColor="#8054f4" /></linearGradient><linearGradient id="brand-right" x1="1" y1="0" x2="0" y2="1"><stop stopColor="#c6b3ff" /><stop offset="1" stopColor="#9467f5" /></linearGradient><linearGradient id="brand-center" x1="0" y1="0" x2="0" y2="1"><stop stopColor="#8249f8" /><stop offset="1" stopColor="#6020ea" /></linearGradient></defs>
-    <path d="M28 44 6 23C-7 10 10-5 22 7l21 21c12 12-2 29-15 16Z" fill="url(#brand-left)" />
-    <path d="m28 44 22-21C63 10 46-5 34 7L13 28C1 40 15 57 28 44Z" fill="url(#brand-right)" />
-    <path d="m28 13 13 13c12 12-1 26-13 20-12 6-25-8-13-20Z" fill="url(#brand-center)" />
-  </svg><span>MediTime</span></div>;
+  return <div className="brand" aria-label="MediTime"><img src="/brand/meditime-mark-48.webp" srcSet="/brand/meditime-mark-96.webp 2x, /brand/meditime-mark-144.webp 3x" width="48" height="34" alt="" aria-hidden="true" /><span>MediTime</span></div>;
 }
 
 export function SecurityArtwork({ email = false }) {
