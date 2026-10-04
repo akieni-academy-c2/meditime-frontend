@@ -1,9 +1,9 @@
-import { Clock, Check, X, CalendarDays } from 'lucide-react';
+import { Clock, Check, X, CalendarDays, Ban } from 'lucide-react';
 import { Switch } from './ui/switch.jsx';
 
-const statuses = { pending: ['En attente', Clock], confirmed: ['Confirmé', Check], declined: ['Décliné', X], past: ['Passé', Check], available: ['Disponible', CalendarDays] };
+const statuses = { pending: ['En attente', Clock], confirmed: ['Confirmé', Check], declined: ['Décliné', X], cancelled: ['Annulé', Ban], past: ['Passé', Check], available: ['Disponible', CalendarDays] };
 export function StatusBadge({ status }) {
-  const [label, Icon] = statuses[status] || statuses.pending;
+  const [label, Icon] = statuses[status] || ['Statut non reconnu', Ban];
   return <span className={`status-badge status-${status}`}><Icon size={14} aria-hidden="true" />{label}</span>;
 }
 
