@@ -2,6 +2,11 @@ import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import { Smartphone } from 'lucide-react';
 import { AuthProvider } from './auth/AuthContext.jsx';
+import { ModeProvider } from './auth/ModeContext.jsx';
+import Profile from './pages/Profile.jsx';
+import ProfileForm from './pages/ProfileForm.jsx';
+import DoctorProfile from './pages/DoctorProfile.jsx';
+import DoctorOnly from './components/DoctorOnly.jsx';
 import Login from './pages/Login.jsx';
 import UIKit from './pages/UIKit.jsx';
 import { Brand } from './components/Brand.jsx';
@@ -22,14 +27,21 @@ export default function App() {
   if (!mobile) return <main className="device-message"><Brand /><div className="device-icon"><Smartphone size={40} /></div>
     <h1>MediTime vous accompagne sur mobile</h1><p>L’application est actuellement disponible sur mobile uniquement. Ouvrez cette adresse sur votre téléphone pour continuer.</p>
   </main>;
-  return <div className="mobile-app"><AuthProvider><Routes>
+  return <div className="mobile-app"><AuthProvider><ModeProvider><Routes>
     <Route path="/connexion" element={<main><Login /></main>} />
     <Route element={<AppShell />}>
       <Route path="/accueil" element={<Home />} />
       <Route path="/rendez-vous" element={<Placeholder title="Rendez-vous" description="Vos demandes de rendez-vous et leur statut apparaîtront ici." />} />
-      <Route path="/profil" element={<Placeholder title="Profil" description="Vos informations personnelles et les paramètres de votre compte seront accessibles ici." profile />} />
+      <Route path="/profil" element={<Profile />} />
+      <Route path="/profil/informations" element={<ProfileForm />} />
+      <Route path="/profil/completer" element={<ProfileForm onboarding />} />
+      <Route element={<DoctorOnly />}>
+        <Route path="/profil/medecin" element={<DoctorProfile />} />
+        <Route path="/planning" element={<Placeholder title="Mon planning" description="Le planning sera raccordé dans le lot suivant." />} />
+        <Route path="/demandes" element={<Placeholder title="Demandes" description="Le traitement des demandes sera raccordé dans le lot suivant." />} />
+      </Route>
       <Route path="/recherche" element={<Placeholder title="Recherche de médecins" description="Vous pourrez rechercher un médecin par spécialité et consulter ses disponibilités." />} />
     </Route>
     <Route path="*" element={<Navigate to="/connexion" replace />} />
-  </Routes></AuthProvider></div>;
+  </Routes></ModeProvider></AuthProvider></div>;
 }

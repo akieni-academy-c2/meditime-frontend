@@ -250,3 +250,18 @@ h1, h2 { text-wrap: balance; }
 .person-avatar [data-slot="avatar-fallback"] { background: var(--secondary); color: var(--primary); font-weight: 650; font-size: 17px; }
 .header-avatar { width: 44px; height: 44px; }
 .header-avatar [data-slot="avatar-fallback"] { font-size: 14px; }
+/* Account screens follow the mobile forms and grouped settings in the mockups. */
+.settings-group { margin-top: 20px; border: 1px solid var(--border); border-radius: 14px; padding: 12px; }
+.settings-group h2 { font-size: .9rem; font-weight: 600; margin-bottom: 6px; }
+.settings-group .settings-row { border: 0; padding: 12px 2px; }
+.logout-button { color: #c9294b; border-color: #ffe3e9; background: #fff2f5; margin-top: 22px; }
+.profile-identity { display: flex; align-items: center; gap: 16px; margin: 22px 0; }
+.profile-identity p { color: var(--muted); font-size: .85rem; overflow-wrap: anywhere; }
+.profile-identity .person-avatar { width: 80px; height: 80px; }
+.profile-fields { margin-top: 30px; }
+.onboarding-screen .brand { margin: 32px auto; }
+.onboarding-screen .auth-heading { margin-bottom: 30px; }
+.form-columns { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.resource-error { margin: 20px 0; }
+.resource-error .auth-button { margin-top: 12px; }
+.mode-options [aria-pressed='true'] { border-color: var(--primary); background: #eee7ff; }
