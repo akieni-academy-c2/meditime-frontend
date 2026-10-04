@@ -13,6 +13,8 @@ import RequestAppointment from './pages/RequestAppointment.jsx';
 import Appointments from './pages/Appointments.jsx';
 import AppointmentDetail from './pages/AppointmentDetail.jsx';
 import DoctorRequestDetail from './pages/DoctorRequestDetail.jsx';
+import Planning from './pages/Planning.jsx';
+import WeeklyPlanning from './pages/WeeklyPlanning.jsx';
 import Login from './pages/Login.jsx';
 import UIKit from './pages/UIKit.jsx';
 import { Brand } from './components/Brand.jsx';
@@ -44,7 +46,8 @@ export default function App() {
       <Route path="/profil/completer" element={<ProfileForm onboarding />} />
       <Route element={<DoctorOnly />}>
         <Route path="/profil/medecin" element={<DoctorProfile />} />
-        <Route path="/planning" element={<Placeholder title="Mon planning" description="Le planning sera raccordé dans le lot suivant." />} />
+        <Route path="/planning" element={<Planning />} />
+        <Route path="/planning/configuration" element={<WeeklyPlanning />} />
         <Route path="/demandes" element={<Appointments doctorView />} />
         <Route path="/demandes/:id" element={<DoctorRequestDetail />} />
       </Route>

@@ -298,3 +298,25 @@ h1, h2 { text-wrap: balance; }
 .text-action { display: block; text-align: center; color: var(--primary); padding: 20px 0; }
 .status-cancelled { background: #edf0f4; color: #4d586b; }
 .decision-actions { display: grid; gap: 12px; margin: 24px 0; }
+.subheading { font-size: 1rem; font-weight: 600; margin: 24px 0 12px; }
+.weekly-days { display: grid; gap: 14px; margin: 24px 0; }
+.weekly-days .schedule-day { grid-template-columns: minmax(0, 1fr) auto; align-items: start; padding: 16px; }
+.weekly-days .schedule-day > div, .weekly-days .schedule-day > span { grid-column: 1 / -1; }
+.weekly-ranges { display: grid; gap: 14px; margin-top: 16px; }
+.range-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 36px; align-items: end; gap: 8px; }
+.range-editor .form-field { margin-bottom: 0; }
+.range-editor > button { padding: 8px; margin-bottom: 4px; }
+.planning-agenda { display: grid; gap: 12px; list-style: none; margin: 28px 0; }
+.planning-agenda li { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 12px; }
+.planning-agenda time { color: var(--muted); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.planning-agenda li > button, .planning-agenda li > div { display: flex; gap: 12px; align-items: center; border: 1px solid var(--border); border-radius: 14px; padding: 14px; text-align: left; min-height: 70px; }
+.planning-agenda strong { display: block; font-weight: 600; font-size: .85rem; }
+.planning-agenda small { display: block; color: var(--muted); font-size: .75rem; margin-top: 5px; overflow-wrap: anywhere; }
+.planning-agenda .person-avatar { width: 42px; height: 42px; flex-shrink: 0; }
+.planning-agenda .agenda-free { background: #dcf8ed; color: #00694a; border-color: #dcf8ed; justify-content: space-between; font-size: .85rem; }
+.planning-agenda .agenda-free button { padding: 10px; }
+.planning-agenda .agenda-blocked { background: #f6f5f9; color: var(--muted); font-size: .85rem; }
+.exceptions-list > div { display: flex; gap: 12px; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 14px 0; font-size: .85rem; }
+.exceptions-list small { display: block; color: var(--muted); margin-top: 5px; }
+.sheet-options .form-columns label { display: block; }
+.sheet-options .form-columns input { width: 100%; height: 48px; }

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api } from './api.js';
 import { useAuth } from '../auth/AuthContext.jsx';
 
@@ -10,7 +10,7 @@ export function useResource(path) {
   useEffect(() => {
     if (!path) return;
     const controller = new AbortController();
-    setResult({ path, data: null, error: '', loading: true });
+    setResult(previous => ({ path, data: previous.path === path ? previous.data : null, error: '', loading: true }));
     api(path, { signal: controller.signal }).then(data => {
       if (!controller.signal.aborted) setResult({ path, data, error: '', loading: false });
     }).catch(error => {
@@ -18,5 +18,6 @@ export function useResource(path) {
     });
     return () => controller.abort();
   }, [path, revision, dataRevision]);
-  return { ...(result.path === path ? result : { data: null, error: '', loading: Boolean(path) }), reload: () => setRevision(value => value + 1) };
+  const reload = useCallback(() => setRevision(value => value + 1), []);
+  return { ...(result.path === path ? result : { data: null, error: '', loading: Boolean(path) }), reload };
 }
