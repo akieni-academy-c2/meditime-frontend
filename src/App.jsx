@@ -12,6 +12,7 @@ import DoctorDetail from './pages/DoctorDetail.jsx';
 import RequestAppointment from './pages/RequestAppointment.jsx';
 import Appointments from './pages/Appointments.jsx';
 import AppointmentDetail from './pages/AppointmentDetail.jsx';
+import DoctorRequestDetail from './pages/DoctorRequestDetail.jsx';
 import Login from './pages/Login.jsx';
 import UIKit from './pages/UIKit.jsx';
 import { Brand } from './components/Brand.jsx';
@@ -44,7 +45,8 @@ export default function App() {
       <Route element={<DoctorOnly />}>
         <Route path="/profil/medecin" element={<DoctorProfile />} />
         <Route path="/planning" element={<Placeholder title="Mon planning" description="Le planning sera raccordé dans le lot suivant." />} />
-        <Route path="/demandes" element={<Placeholder title="Demandes" description="Le traitement des demandes sera raccordé dans le lot suivant." />} />
+        <Route path="/demandes" element={<Appointments doctorView />} />
+        <Route path="/demandes/:id" element={<DoctorRequestDetail />} />
       </Route>
       <Route path="/recherche" element={<Search />} />
       <Route path="/medecins/:id" element={<DoctorDetail />} />

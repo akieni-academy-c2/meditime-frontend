@@ -297,3 +297,4 @@ h1, h2 { text-wrap: balance; }
 .list-heading .auth-button { width: auto; height: 44px; min-height: 44px; padding: 0 8px; font-size: .78rem; }
 .text-action { display: block; text-align: center; color: var(--primary); padding: 20px 0; }
 .status-cancelled { background: #edf0f4; color: #4d586b; }
+.decision-actions { display: grid; gap: 12px; margin: 24px 0; }

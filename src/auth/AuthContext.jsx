@@ -7,6 +7,7 @@ export function AuthProvider({ children }) {
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [dataRevision, setDataRevision] = useState(0);
 
   function clearSession() {
     configureSession(null);
@@ -41,7 +42,7 @@ export function AuthProvider({ children }) {
     clearSession();
   }
 
-  return <AuthContext.Provider value={{ account, loading, error, refresh, acceptSession, logout }}>
+  return <AuthContext.Provider value={{ account, loading, error, refresh, acceptSession, logout, dataRevision, notifyDataChanged: () => setDataRevision(value => value + 1) }}>
     {children}
   </AuthContext.Provider>;
 }

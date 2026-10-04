@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { api } from './api.js';
+import { useAuth } from '../auth/AuthContext.jsx';
 
 // One cancellable read per screen; no session or server permissions cached here.
 export function useResource(path) {
+  const { dataRevision = 0 } = useAuth() || {};
   const [revision, setRevision] = useState(0);
   const [result, setResult] = useState({ path: null, data: null, error: '', loading: true });
   useEffect(() => {
@@ -15,6 +17,6 @@ export function useResource(path) {
       if (!controller.signal.aborted) setResult({ path, data: null, error: error.message, loading: false });
     });
     return () => controller.abort();
-  }, [path, revision]);
+  }, [path, revision, dataRevision]);
   return { ...(result.path === path ? result : { data: null, error: '', loading: Boolean(path) }), reload: () => setRevision(value => value + 1) };
 }
