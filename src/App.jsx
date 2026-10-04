@@ -7,6 +7,8 @@ import Profile from './pages/Profile.jsx';
 import ProfileForm from './pages/ProfileForm.jsx';
 import DoctorProfile from './pages/DoctorProfile.jsx';
 import DoctorOnly from './components/DoctorOnly.jsx';
+import Search from './pages/Search.jsx';
+import DoctorDetail from './pages/DoctorDetail.jsx';
 import Login from './pages/Login.jsx';
 import UIKit from './pages/UIKit.jsx';
 import { Brand } from './components/Brand.jsx';
@@ -40,7 +42,8 @@ export default function App() {
         <Route path="/planning" element={<Placeholder title="Mon planning" description="Le planning sera raccordé dans le lot suivant." />} />
         <Route path="/demandes" element={<Placeholder title="Demandes" description="Le traitement des demandes sera raccordé dans le lot suivant." />} />
       </Route>
-      <Route path="/recherche" element={<Placeholder title="Recherche de médecins" description="Vous pourrez rechercher un médecin par spécialité et consulter ses disponibilités." />} />
+      <Route path="/recherche" element={<Search />} />
+      <Route path="/medecins/:id" element={<DoctorDetail />} />
     </Route>
     <Route path="*" element={<Navigate to="/connexion" replace />} />
   </Routes></ModeProvider></AuthProvider></div>;

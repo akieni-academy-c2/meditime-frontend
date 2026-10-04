@@ -265,3 +265,22 @@ h1, h2 { text-wrap: balance; }
 .resource-error { margin: 20px 0; }
 .resource-error .auth-button { margin-top: 12px; }
 .mode-options [aria-pressed='true'] { border-color: var(--primary); background: #eee7ff; }
+.card-list { display: grid; gap: 14px; margin-top: 18px; }
+.person-card .next-available { display: inline-block; background: #dcf8ed; color: #00694a; padding: 5px 8px; border-radius: 8px; font-size: .72rem; line-height: 1.5; margin-top: 8px; }
+.results-count { margin-top: 22px; color: var(--muted); font-size: .85rem; }
+.search-form { margin-top: 22px; }
+.search-form .auth-button { margin-top: 0; }
+.active-filters { margin-top: 14px; }
+.filter-switch { display: flex; align-items: center; justify-content: space-between; gap: 16px; font-size: .9rem; }
+.pagination { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 22px; font-size: .75rem; }
+.pagination button { padding-inline: 10px; }
+.doctor-identity { display: flex; align-items: center; gap: 16px; margin: 26px 0; }
+.doctor-identity .person-avatar { width: 86px; height: 86px; }
+.doctor-identity h1 { font-size: 1.35rem; }
+.doctor-facts { display: grid; gap: 20px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.doctor-facts p { display: flex; gap: 14px; align-items: flex-start; font-size: .85rem; }
+.doctor-facts svg { flex-shrink: 0; width: 22px; height: 22px; }
+.doctor-facts small { display: block; color: var(--muted); line-height: 1.55; margin-top: 4px; }
+.slots-section h2 { font-size: 1rem; font-weight: 600; margin: 22px 0 14px; }
+.slots-section .auth-button { margin-top: 28px; }
+.specialty-list span { text-align: center; overflow-wrap: anywhere; padding-inline: 4px; }
