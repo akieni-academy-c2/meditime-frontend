@@ -2,7 +2,7 @@
 // Fiche médecin + créneaux disponibles (issue #8).
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { MapPin, Stethoscope, UserRound, Clock, Building2 } from 'lucide-react';
 import { PageHeader } from '@/components/PageHeader.jsx';
 import { DateStrip } from '@/components/DateStrip.jsx';
@@ -13,6 +13,7 @@ import { getDoctorById, getDoctorSlots } from '@/lib/doctors.js';
 
 export default function MedecinDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [doctor, setDoctor] = useState(null);
   const [slots, setSlots] = useState([]);
@@ -60,14 +61,12 @@ export default function MedecinDetail() {
     setSelectedSlot(null);
   }
 
-  function handleConfirm() {
-    // ⚠️ Issue #9 : envoyer la vraie demande à ce moment-là.
-    // Pour l'instant, on prévient juste l'utilisateur.
-    window.alert(
-      `Créneau sélectionné : ${selectedSlot.startAt}\n\n` +
-        "L'envoi de la demande sera disponible dans l'issue #9."
-    );
-  }
+ function handleConfirm() {
+  if (!selectedSlot) return;
+  navigate(`/medecins/${id}/demander`, {
+    state: { slot: selectedSlot },
+  });
+}
 
   return (
     <>
@@ -127,18 +126,12 @@ export default function MedecinDetail() {
           {/* Bouton de confirmation */}
           {selectedSlot && (
             <div className="doctor-confirm">
-              <AuthButton onClick={handleConfirm}>
-                Confirmer le rendez-vous
-              </AuthButton>
+                <AuthButton onClick={handleConfirm}>
+                  Demander le rendez-vous
+                </AuthButton>
             </div>
           )}
 
-          {/* Info : la sélection seule ne crée pas de RDV */}
-          {selectedSlot && (
-            <p className="doctor-info">
-              La sélection d'un créneau ne crée pas encore de rendez-vous.
-            </p>
-          )}
         </>
       )}
     </>

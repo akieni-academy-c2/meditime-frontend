@@ -10,6 +10,10 @@ import Home from './pages/Home.jsx';
 import Placeholder from './pages/Placeholder.jsx';
 import Recherche from './pages/Recherche.jsx';
 import MedecinDetail from './pages/MedecinDetail.jsx';
+import NouvelleDemande from './pages/NouvelleDemande.jsx';       
+import Confirmation from './pages/Confirmation.jsx';             
+import MesRendezVous from './pages/MesRendezVous.jsx';           
+import SuiviDemande from './pages/SuiviDemande.jsx';             
 
 export default function App() {
   const [mobile, setMobile] = useState(() => window.matchMedia('(max-width: 1024px)').matches);
@@ -26,10 +30,14 @@ export default function App() {
     <Route path="/connexion" element={<main><Login /></main>} />
     <Route element={<AppShell />}>
       <Route path="/accueil" element={<Home />} />
-      <Route path="/rendez-vous" element={<Placeholder title="Rendez-vous" description="Vos demandes de rendez-vous et leur statut apparaîtront ici." />} />
+      <Route path="/rendez-vous" element={<MesRendezVous />} />
+      <Route path="/rendez-vous/suivi" element={<SuiviDemande />} />
+      <Route path="/rendez-vous/suivi/:code" element={<SuiviDemande />} />
+      <Route path="/rendez-vous/confirmation/:code" element={<Confirmation />} />
       <Route path="/profil" element={<Placeholder title="Profil" description="Vos informations personnelles et les paramètres de votre compte seront accessibles ici." profile />} />
       <Route path="/recherche" element={<Recherche />} />
       <Route path="/medecins/:id" element={<MedecinDetail />} />
+      <Route path="/medecins/:id/demander" element={<NouvelleDemande />} />
     </Route>
     {import.meta.env.DEV && <Route path="/ui-kit" element={<UIKit />} />}
     <Route path="*" element={<Navigate to="/connexion" replace />} />
