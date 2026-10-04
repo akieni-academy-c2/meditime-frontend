@@ -300,11 +300,11 @@ h1, h2 { text-wrap: balance; }
 .decision-actions { display: grid; gap: 12px; margin: 24px 0; }
 .subheading { font-size: 1rem; font-weight: 600; margin: 24px 0 12px; }
 .weekly-days { display: grid; gap: 14px; margin: 24px 0; }
-.weekly-days .schedule-day { grid-template-columns: minmax(0, 1fr) auto; align-items: start; padding: 16px; }
+.weekly-days .schedule-day { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; padding: 16px; }
 .weekly-days .schedule-day > div, .weekly-days .schedule-day > span { grid-column: 1 / -1; }
 .weekly-ranges { display: grid; gap: 14px; margin-top: 16px; }
 .range-editor { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 36px; align-items: end; gap: 8px; }
-.range-editor .form-field { margin-bottom: 0; }
+.range-editor .mt-field { margin-bottom: 0; }
 .range-editor > button { padding: 8px; margin-bottom: 4px; }
 .planning-agenda { display: grid; gap: 12px; list-style: none; margin: 28px 0; }
 .planning-agenda li { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 12px; }
@@ -320,3 +320,14 @@ h1, h2 { text-wrap: balance; }
 .exceptions-list small { display: block; color: var(--muted); margin-top: 5px; }
 .sheet-options .form-columns label { display: block; }
 .sheet-options .form-columns input { width: 100%; height: 48px; }
+.dashboard-date { color: var(--muted); font-size: .85rem; line-height: 1.6; margin: 14px 0; }
+.dashboard-counts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 24px 0; }
+.dashboard-counts a { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; text-decoration: none; border-radius: 16px; background: #f2ecff; padding: 18px; }
+.dashboard-counts a:nth-child(2) { background: #edf2ff; }
+.dashboard-counts svg { color: var(--primary); }
+.dashboard-counts strong { font-size: 1.65rem; font-weight: 600; }
+.dashboard-counts span { grid-column: 1 / -1; font-size: .8rem; line-height: 1.45; }
+.dashboard-actions { display: grid; gap: 12px; }
+.dashboard-actions a { display: flex; gap: 14px; align-items: center; padding: 18px; border: 1px solid var(--border); border-radius: 14px; text-decoration: none; font-size: .9rem; }
+.home-section .section-heading > button { color: var(--primary); font-size: .8rem; padding-inline: 8px; }
+.page-header > h1 + button { display: flex; width: auto; padding-inline: 12px; margin-left: auto; gap: 6px; flex-shrink: 0; }

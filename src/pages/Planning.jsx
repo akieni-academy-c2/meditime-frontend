@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Settings, Plus } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../lib/api.js';
@@ -20,7 +20,12 @@ import PlanningExceptionSheet from '../components/PlanningExceptionSheet.jsx';
 function PlanningCalendar({ doctor }) {
   const navigate = useNavigate();
   const { notifyDataChanged } = useAuth();
-  const [date, setDate] = useState(() => dateInZone(new Date(), doctor.timezone));
+  const [query] = useSearchParams();
+  const [date, setDate] = useState(() => {
+    const requested = query.get('date');
+    const valid = /^\d{4}-\d{2}-\d{2}$/.test(requested || '') && Number.isFinite(Date.parse(`${requested}T12:00:00Z`));
+    return valid ? requested : dateInZone(new Date(), doctor.timezone);
+  });
   const [sheet, setSheet] = useState(false);
   const [remove, setRemove] = useState(null);
   const [busy, setBusy] = useState(false);

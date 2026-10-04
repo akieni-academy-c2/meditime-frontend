@@ -20,7 +20,7 @@ import UIKit from './pages/UIKit.jsx';
 import { Brand } from './components/Brand.jsx';
 import AppShell from './components/AppShell.jsx';
 import Home from './pages/Home.jsx';
-import Placeholder from './pages/Placeholder.jsx';
+
 
 export default function App() {
   const location = useLocation();
