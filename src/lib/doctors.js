@@ -4,6 +4,7 @@
 
 import { api } from './api.js';
 import { MOCK_DOCTORS, MOCK_SPECIALTIES, simulateDelay } from './data/mockDoctors.js';
+import { MOCK_SLOTS } from './data/mockSlots.js';
 
 // 👇 Passer à `false` quand le backend #6 sera prêt
 const USE_MOCK = true;
@@ -44,4 +45,30 @@ export async function searchDoctors({ name = '', specialty = '', city = '' } = {
 
   const query = params.toString();
   return api(`/doctors${query ? `?${query}` : ''}`);
+}
+
+/**
+ * Récupère un médecin par son ID.
+ * @param {string} id
+ * @returns {Promise<Object|null>}
+ */
+export async function getDoctorById(id) {
+  if (USE_MOCK) {
+    await simulateDelay(200);
+    return MOCK_DOCTORS.find((doctor) => doctor.id === id) || null;
+  }
+  return api(`/doctors/${id}`);
+}
+
+/**
+ * Récupère les créneaux disponibles d'un médecin.
+ * @param {string} id
+ * @returns {Promise<Array>}
+ */
+export async function getDoctorSlots(id) {
+  if (USE_MOCK) {
+    await simulateDelay(250);
+    return MOCK_SLOTS;
+  }
+  return api(`/doctors/${id}/slots`);
 }
