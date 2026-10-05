@@ -1,0 +1,35 @@
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRight, CalendarDays, HelpCircle, LogOut, Stethoscope, UserRound, Users } from 'lucide-react';
+import { useAuth } from '../auth/AuthContext.jsx';
+import { useMode } from '../auth/ModeContext.jsx';
+import { SettingsRow } from '../components/CardsUI.jsx';
+import { AuthButton, AuthNotice } from '../components/AuthUI.jsx';
+import ConfirmationSheet from '../components/ConfirmationSheet.jsx';
+import BottomSheet from '../components/BottomSheet.jsx';
+
+export default function Profile() {
+  const { logout } = useAuth();
+  const { mode, allowedModes, changeMode } = useMode();
+  const navigate = useNavigate();
+  const [sheet, setSheet] = useState(null);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  async function disconnect() {
+    if (busy) return;
+    setBusy(true); setError('');
+    try { await logout(); navigate('/connexion', { replace: true }); }
+    catch (err) { setError(err.message); } finally { setBusy(false); }
+  }
+  return <><h1>Paramètres</h1><p className="page-intro">Gérez votre compte et vos informations.</p>
+    <section className="settings-group"><h2>Compte</h2><SettingsRow icon={UserRound} title="Mes informations" description="Nom, email, téléphone" onClick={() => navigate('/profil/informations')} /></section>
+    {allowedModes.includes('doctor') && <section className="settings-group"><h2>Médecin</h2><SettingsRow icon={Stethoscope} title="Informations médecin" description="Spécialité, cabinet, adresse" onClick={() => { changeMode('doctor'); navigate('/profil/medecin'); }} /><SettingsRow icon={CalendarDays} title="Configurer le planning" description="Horaires et disponibilités" onClick={() => { changeMode('doctor'); navigate('/planning'); }} /></section>}
+    <section className="settings-group"><h2>Assistance</h2><SettingsRow icon={HelpCircle} title="Aide" description="Connexion et rendez-vous" onClick={() => setSheet('help')} /></section>
+    {allowedModes.includes('doctor') && <section className="settings-group"><h2>Mode</h2><SettingsRow icon={Users} title={mode === 'doctor' ? 'Mode Médecin' : 'Mode Patient'} description="Utilisez le même compte" onClick={() => setSheet('mode')} /></section>}
+    {error && <AuthNotice error>{error}</AuthNotice>}<AuthButton className="logout-button" variant="outline" disabled={busy} onClick={() => setSheet('logout')}><LogOut size={20} />{busy ? 'Déconnexion…' : 'Déconnexion'}</AuthButton>
+    <BottomSheet className={`business-sheet ${sheet === 'mode' ? 'mode-sheet' : ''}`} open={sheet === 'mode' || sheet === 'help'} onOpenChange={value => { if (!value) setSheet(null); }} title={sheet === 'mode' ? 'Changer de mode' : 'Aide'} description={sheet === 'mode' ? 'Choisissez votre espace.' : 'Quelques repères pour utiliser MediTime.'}>
+      {sheet === 'mode' ? <><div className="mode-options">{allowedModes.map(value => <button key={value} type="button" aria-pressed={mode === value} onClick={() => { changeMode(value); setSheet(null); navigate('/accueil'); }}><span><strong>Mode {value === 'doctor' ? 'Médecin' : 'Patient'}</strong><small>{value === 'doctor' ? 'Gérez votre planning et vos demandes.' : 'Prenez rendez-vous et suivez vos demandes.'}</small><ArrowRight className="mode-arrow" size={21} /></span><img className="mode-illustration" src={`/illustrations/mode-${value === 'doctor' ? 'doctor' : 'patient'}.webp`} alt="" width="90" height="104" /></button>)}</div></> : <p className="page-intro">Une demande de rendez-vous reste en attente jusqu’à la décision du médecin. Si une erreur apparaît, vérifiez votre connexion puis réessayez. Le changement de mode conserve le même compte.</p>}
+    </BottomSheet>
+    <ConfirmationSheet open={sheet === 'logout'} onOpenChange={value => { if (!value) setSheet(null); }} title="Se déconnecter ?" description="Vous devrez vous reconnecter pour accéder à vos rendez-vous." confirmLabel="Se déconnecter" cancelLabel="Rester connecté" busy={busy} onConfirm={disconnect} destructive />
+  </>;
+}

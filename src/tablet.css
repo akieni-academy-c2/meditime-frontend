@@ -1,0 +1,47 @@
+@media (min-width: 600px) and (max-width: 1024px) {
+  body .mobile-app { max-width: 1024px; }
+  .auth-screen { max-width: 480px; margin-inline: auto; }
+  .business-shell { --tablet-gutter: clamp(24px, 4vw, 40px); }
+  .business-shell .app-header { padding: max(28px, env(safe-area-inset-top)) var(--tablet-gutter) 24px; }
+  .business-shell .app-content { padding-inline: var(--tablet-gutter); }
+  .business-shell.internal-page .app-content { padding-top: max(28px, env(safe-area-inset-top)); }
+  .business-shell .page-content > h1 { font-size: 1.8rem; }
+  .business-shell .page-intro { font-size: .95rem; }
+  .business-shell .home-search, .business-shell .search-bar { min-height: 54px; }
+  .business-shell .home-section { margin-top: 30px; }
+  .business-shell .specialty-list { gap: 16px; }
+  .business-shell .specialty-list a { min-height: 108px; }
+  .business-shell .specialty-list span { font-size: .78rem; }
+  .business-shell .tab-bar { width: min(100%, 1024px); padding-inline: var(--tablet-gutter); }
+  .business-shell .tab-bar a { min-height: 48px; }
+  body .meditime-sheet { width: min(100% - 48px, 600px); padding-inline: 28px; }
+  .business-shell .doctor-settings-form, .business-shell .profile-fields, .business-shell .weekly-form,
+  .business-shell .request-form { max-width: 720px; margin-inline: auto; }
+  .business-shell .consultation-day { min-height: 68px; font-size: .78rem; }
+  .business-shell .slot-grid { grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); }
+  .business-shell .slot-grid button { min-height: 44px; font-size: .85rem; }
+  .business-shell .date-strip button { min-height: 66px; font-size: .8rem; }
+  .business-shell .planning-agenda li { grid-template-columns: 64px minmax(0, 1fr); gap: 16px; }
+  .business-shell .planning-agenda time { font-size: .85rem; }
+  .business-shell .planning-agenda li > button, .business-shell .planning-agenda li > div { min-height: 56px; padding: 12px 16px; }
+  .business-shell .planning-agenda strong { font-size: .87rem; }
+  .business-shell .planning-agenda small { font-size: .78rem; }
+  .business-shell .weekly-summary-day { grid-template-columns: 110px 36px minmax(0, 1fr); padding: 10px 16px; }
+  .business-shell .weekly-summary-day > strong, .business-shell .weekly-times { font-size: .85rem; }
+  .business-shell .overview-facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .business-shell .overview-facts span { min-width: 0; overflow-wrap: anywhere; }
+  .business-shell .request-secondary-actions, .business-shell .decision-actions { max-width: 440px; margin-inline: auto; }
+}
+
+@media (min-width: 760px) and (max-width: 1024px) {
+  .business-shell .doctor-list, .business-shell .appointment-list, .business-shell .card-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .business-shell .doctor-list > li, .business-shell .appointment-list > li { min-width: 0; }
+  .business-shell .doctor-list .doctor-card, .business-shell .appointment-list .appointment-card, .business-shell .card-list .person-card { height: 100%; }
+  .business-shell .dashboard-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .business-shell .card-list > .person-card:only-child { grid-column: 1 / -1; }
+  .business-shell[data-page='/profil'] .page-content { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 24px; }
+  .business-shell[data-page='/profil'] .page-content > h1, .business-shell[data-page='/profil'] .page-content > .page-intro,
+  .business-shell[data-page='/profil'] .page-content > .logout-button { grid-column: 1 / -1; }
+  .business-shell[data-page='/profil'] .logout-button { max-width: 340px; justify-self: center; }
+  .business-shell .settings-group { padding: 16px; }
+}
