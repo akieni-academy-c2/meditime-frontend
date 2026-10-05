@@ -7,6 +7,7 @@ import { AuthButton, AuthLoading, AuthNotice } from './AuthUI.jsx';
 import { Brand } from './Brand.jsx';
 import { AppHeader, TabBar } from './NavigationUI.jsx';
 import { useResource } from '../lib/useResource.js';
+import '../business.css';
 
 export default function AppShell() {
   const { account, loading, error, refresh } = useAuth();
@@ -20,9 +21,10 @@ export default function AppShell() {
   if (!account.user.profileCompleted && location.pathname !== '/profil/completer') return <Navigate to="/profil/completer" replace />;
   if (location.pathname === '/profil/completer') return <main><Outlet /></main>;
 
-  return <div className="app-shell">
-    <AppHeader user={account.user} />
+  const showBrand = ['/accueil', '/profil'].includes(location.pathname);
+  return <div className={`app-shell business-shell ${showBrand ? 'with-brand' : 'internal-page'}`}>
+    {showBrand && <AppHeader user={account.user} />}
     <main className="app-content" id="main-content"><Outlet context={{ dashboard }} /></main>
-    <TabBar items={mode === 'doctor' ? [{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/planning', label: 'Planning', icon: CalendarDays }, { to: '/demandes', label: 'Demandes', icon: ClipboardList, count: dashboard.data?.counts.pending }, { to: '/profil', label: 'Profil', icon: UserRound }] : [{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/rendez-vous', label: 'Rendez-vous', icon: CalendarDays }, { to: '/profil', label: 'Profil', icon: UserRound }]} />
+    <TabBar selectedTo={location.pathname === '/recherche' ? '/accueil' : mode === 'patient' && location.pathname.startsWith('/medecins/') ? '/rendez-vous' : undefined} items={mode === 'doctor' ? [{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/planning', label: 'Planning', icon: CalendarDays }, { to: '/demandes', label: 'Demandes', icon: ClipboardList, count: dashboard.data?.counts.pending }, { to: '/profil', label: 'Profil', icon: UserRound }] : [{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/rendez-vous', label: 'Rendez-vous', icon: CalendarDays }, { to: '/profil', label: 'Profil', icon: UserRound }]} />
   </div>;
 }

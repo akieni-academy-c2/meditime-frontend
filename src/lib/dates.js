@@ -10,6 +10,11 @@ export function formatDate(value, timezone = defaultZone) {
 export function formatTime(value, timezone = defaultZone) {
   return new Intl.DateTimeFormat('fr', { timeZone: timezone, hour: '2-digit', minute: '2-digit' }).format(new Date(value));
 }
+export function formatCompactDate(value, timezone = defaultZone) {
+  const date = new Date(value);
+  const sameYear = dateInZone(date, timezone).slice(0, 4) === dateInZone(new Date(), timezone).slice(0, 4);
+  return new Intl.DateTimeFormat('fr', { timeZone: timezone, weekday: 'short', day: 'numeric', month: 'short', ...(sameYear ? {} : { year: 'numeric' }) }).format(date);
+}
 export function shiftDate(date, days) {
   const value = new Date(`${date}T12:00:00Z`);
   value.setUTCDate(value.getUTCDate() + days);

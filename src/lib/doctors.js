@@ -12,11 +12,12 @@ export async function getSpecialties({ signal } = {}) {
   if (!Array.isArray(data.specialties)) throw new ApiError('La liste des spécialités est illisible.', 200, 'INVALID_RESPONSE');
   return data.specialties;
 }
-export async function searchDoctors({ name = '', specialtyId = '', city = '', page = 1, limit = 12, signal } = {}) {
+export async function searchDoctors({ name = '', specialtyId = '', city = '', availableBefore = '', page = 1, limit = 12, signal } = {}) {
   const params = new URLSearchParams({ page, limit });
   if (name.trim()) params.set('q', name.trim());
   if (specialtyId) params.set('specialtyId', specialtyId);
   if (city.trim()) params.set('city', city.trim());
+  if (availableBefore) params.set('availableBefore', availableBefore);
   const data = payload(await api('/doctors?' + params, { signal }));
   if (!Array.isArray(data.doctors) || !data.pagination) throw new ApiError('Les résultats de recherche sont illisibles.', 200, 'INVALID_RESPONSE');
   return { ...data, doctors: data.doctors.map(doctorForView) };

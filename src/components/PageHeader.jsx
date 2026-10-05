@@ -8,7 +8,7 @@ export function PageHeader({ title, showActions = false }) {
   const navigate = useNavigate();
 
   return (
-    <header className="page-header">
+    <header className="page-header has-back">
       <button
         type="button"
         className="page-header-back"
