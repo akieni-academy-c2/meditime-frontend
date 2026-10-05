@@ -10,7 +10,7 @@ import '../desktop.css';
 // A presentation of the patient home, using the same icons as the application.
 // It is intentionally independent of the signed-in account and makes no API calls.
 function PhonePreview() {
-  return <div className="gateway-phone" aria-hidden="true">
+  return <div className="gateway-phone" aria-hidden="true"><div className="gateway-phone-art">
     <img className="gateway-hand" src="/illustrations/mobile-in-hand.webp" width="1024" height="1536" alt="" />
     <div className="gateway-phone-screen">
       <div className="preview-island" />
@@ -29,7 +29,7 @@ function PhonePreview() {
       <div className="preview-navigation">{[[House, 'Accueil'], [CalendarDays, 'Rendez-vous'], [UserRound, 'Profil']].map(([Icon, label]) => <div key={label}><Icon /><span>{label}</span></div>)}</div>
       <div className="preview-home-indicator" />
     </div>
-  </div>;
+  </div></div>;
 }
 
 export default function DesktopGateway() {
