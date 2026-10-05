@@ -6,7 +6,7 @@ import { PageHeader } from '../components/NavigationUI.jsx';
 import { AuthButton, AuthNotice } from '../components/AuthUI.jsx';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../lib/api.js';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../components/ui/dialog.jsx';
+import ConfirmationSheet from '../components/ConfirmationSheet.jsx';
 import PersonAvatar from '../components/PersonAvatar.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { formatCompactDate, formatTime, personName } from '../lib/dates.js';
@@ -32,7 +32,7 @@ function CancelRequest({ appointment }) {
     } catch (err) { setError(err.message); setOpen(false); notifyDataChanged(); }
     finally { setBusy(false); }
   }
-  return <>{error && <AuthNotice error>{error}</AuthNotice>}{appointment.status === 'pending' && <AuthButton variant="outline" disabled={busy} onClick={() => setOpen(true)}>Annuler ma demande</AuthButton>}<Dialog open={open} onOpenChange={value => { if (!busy) setOpen(value); }}><DialogContent><DialogTitle>Annuler cette demande ?</DialogTitle><DialogDescription>Le médecin ne pourra plus confirmer cette demande.</DialogDescription><AuthButton disabled={busy} onClick={cancel}>{busy ? 'Annulation…' : 'Annuler la demande'}</AuthButton><AuthButton variant="outline" disabled={busy} onClick={() => setOpen(false)}>Conserver la demande</AuthButton></DialogContent></Dialog></>;
+  return <>{error && <AuthNotice error>{error}</AuthNotice>}{appointment.status === 'pending' && <AuthButton variant="outline" disabled={busy} onClick={() => setOpen(true)}>Annuler ma demande</AuthButton>}<ConfirmationSheet open={open} onOpenChange={setOpen} title="Annuler cette demande ?" description="Le médecin ne pourra plus confirmer cette demande." confirmLabel="Annuler la demande" cancelLabel="Conserver la demande" busy={busy} onConfirm={cancel} destructive /></>;
 }
 export default function AppointmentDetail({ doctorView = false, children }) {
   const { id } = useParams();
@@ -41,5 +41,5 @@ export default function AppointmentDetail({ doctorView = false, children }) {
   const resource = useResource(`/appointments/${id}`);
   const appointment = resource.data?.appointment;
   const sent = !doctorView && params.get('envoyee') === '1';
-  return <><PageHeader title={sent ? 'Récapitulatif de la demande' : 'Détail de la demande'} onBack={() => navigate(doctorView ? '/demandes' : '/rendez-vous')} /><ResourceState resource={resource} />{appointment && <>{sent && <div className="request-success"><div className="success-symbol"><Check size={40} /></div><h1>Demande envoyée !</h1><p>Votre demande a été transmise. Consultez son statut pour suivre la décision du médecin.</p></div>}<RequestOverview appointment={appointment} doctorView={doctorView} /><section className="request-info"><h2>Motif de la demande</h2><p>{appointment.reason || 'Aucun motif renseigné.'}</p></section>{reasons[appointment.decisionCode] && <p className="field-hint">{reasons[appointment.decisionCode]}</p>}{children?.(appointment, resource.reload)}<div className="request-secondary-actions">{!doctorView && <CancelRequest appointment={appointment} />}<button type="button" className="text-action" onClick={resource.reload}>Actualiser le statut</button>{sent && <><AuthButton onClick={() => navigate('/rendez-vous')}>Voir mes rendez-vous</AuthButton><Link className="text-action" to="/accueil">Retour à l’accueil</Link></>}</div></>}</>;
+  return <><PageHeader title={sent ? 'Récapitulatif de la demande' : 'Détail de la demande'} onBack={() => navigate(doctorView ? '/demandes' : '/rendez-vous')} /><ResourceState resource={resource} />{appointment && <>{sent && <div className="request-success"><div className="success-symbol"><Check size={40} /></div><h1>Demande envoyée !</h1><p>Votre demande a été transmise. Consultez son statut pour suivre la décision du médecin.</p></div>}<RequestOverview appointment={appointment} doctorView={doctorView} /><section className="request-info"><h2>Motif de la demande</h2><p>{appointment.reason || 'Aucun motif renseigné.'}</p></section>{reasons[appointment.decisionCode] && <p className="field-hint">{reasons[appointment.decisionCode]}</p>}{children?.(appointment, resource.reload)}<div className="request-secondary-actions">{!doctorView && <CancelRequest appointment={appointment} />}{sent && <><AuthButton onClick={() => navigate('/rendez-vous')}>Voir mes rendez-vous</AuthButton><Link className="text-action" to="/accueil">Retour à l’accueil</Link></>}</div></>}</>;
 }

@@ -6,7 +6,7 @@
 .business-shell .app-header .brand > span { font-size: 1.4rem; }
 .business-shell .app-content > h1 { font-size: 1.55rem; }
 .business-shell .page-intro { font-size: .86rem; line-height: 1.5; }
-.business-shell .page-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin: 0 0 22px; min-height: 44px; }
+.business-shell .page-header { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; padding: 0; margin: 0 0 22px; min-height: 44px; }
 .business-shell .page-header.has-back { grid-template-columns: 32px minmax(0, 1fr) 32px; }
 .business-shell .page-header.has-back.has-action { grid-template-columns: 32px minmax(0, 1fr) 38px; }
 .business-shell .page-header.has-back:not(.has-action)::after { content: ''; grid-column: 3; }
@@ -57,9 +57,9 @@
 .business-shell .appointment-facts p { font-size: .73rem; }
 .business-shell .appointment-facts svg { width: 16px; height: 16px; }
 .business-shell .reason-preview { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; margin-top: 8px; background: #edf0ff; color: #443ba2; border-radius: 8px; padding: 4px 7px; line-height: 1.4; }
-.business-shell .tabs, .business-shell .filter-chips { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 5px; overflow: visible; padding-bottom: 2px; }
-.business-shell .tabs::-webkit-scrollbar, .business-shell .filter-chips::-webkit-scrollbar { display: none; }
-.business-shell .tab-button, .business-shell .filter-chips button { min-width: 0; min-height: 38px; border: 1px solid var(--border); border-radius: 10px; padding: 8px 2px; font-size: .64rem; }
+.business-shell .tabs, .business-shell .filter-chips { display: flex; gap: 8px; overflow-x: auto; max-width: 100%; padding-bottom: 5px; scrollbar-width: thin; }
+
+.business-shell .tab-button, .business-shell .filter-chips button { flex: 0 0 auto; min-height: 40px; border: 1px solid var(--border); border-radius: 10px; padding: 8px 14px; font-size: .8rem; white-space: nowrap; }
 .business-shell .tab-button[data-active='true'], .business-shell .filter-chips button[aria-pressed='true'] { color: var(--primary); background: #eee7ff; border-color: #eee7ff; }
 .business-shell .appointment-list { display: grid; gap: 12px; margin-top: 12px; padding: 0; list-style: none; }
 .business-shell .appointment-card { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 12px; padding: 13px; position: relative; }
@@ -84,8 +84,8 @@
 .consultation-dates { display: grid; grid-template-columns: 18px minmax(0, 1fr) 18px; gap: 4px; align-items: center; }
 .consultation-week { width: 18px; min-height: 44px; color: var(--muted); display: grid; place-items: center; }
 .consultation-week:disabled { opacity: .3; }
-.consultation-days { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
-.consultation-day { display: grid; gap: 5px; place-content: center; text-align: center; border: 1px solid var(--border); border-radius: 10px; min-height: 57px; padding: 6px 2px; color: var(--muted); font-size: .68rem; }
+.consultation-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.consultation-day { display: grid; gap: 5px; place-content: center; text-align: center; border: 1px solid var(--border); border-radius: 10px; min-height: 57px; padding: 6px 2px; color: var(--muted); font-size: .6rem; }
 .consultation-day strong { font-weight: 500; white-space: nowrap; }
 .consultation-day[aria-selected='true'] { background: #eee7ff; border-color: #eee7ff; color: var(--primary); }
 .consultation-day:disabled { opacity: .4; }
@@ -104,7 +104,7 @@
 .business-shell .subheading { font-size: .95rem; margin: 22px 0 12px; }
 .business-shell .request-information { margin: 20px 0; padding-top: 16px; border-top: 1px solid var(--border); }
 .business-shell .request-information h2 { font-size: .9rem; }
-.business-shell .request-contact { border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-top: 10px; display: grid; gap: 8px; }
+.business-shell .request-contact { border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-top: 6px; display: grid; gap: 8px; }
 .business-shell .request-contact p { display: flex; gap: 12px; align-items: start; font-size: .75rem; overflow-wrap: anywhere; line-height: 1.5; }
 .business-shell .request-contact svg { width: 18px; height: 18px; flex-shrink: 0; }
 .business-shell .form-fields { margin: 0; }
@@ -219,7 +219,7 @@
 .business-shell .logout-button[data-variant='outline'] { margin-top: 16px; color: #c9294b; background: #fff2f5; border-color: #ffe3e9; }
 .mode-sheet.meditime-sheet > header { text-align: center; padding-right: 0; margin-top: 8px; }
 .mode-sheet .mode-intro { color: var(--muted); text-align: center; font-size: .83rem; line-height: 1.5; margin-bottom: 18px; }
-.mode-sheet .mode-options button { min-height: 146px; justify-content: space-between; padding: 18px; gap: 20px; }
+.mode-sheet .mode-options button { min-height: 104px; justify-content: space-between; padding: 18px; gap: 20px; }
 .mode-sheet .mode-options button > span { max-width: 210px; }
 .mode-sheet .mode-options strong { font-size: 1.06rem; }
 .mode-sheet .mode-options small { font-size: .78rem; line-height: 1.45; }
@@ -244,3 +244,15 @@
   .business-shell .duration-setting [data-slot='select-trigger'] { width: 116px; }
   .consultation-day { font-size: .61rem; }
 }
+
+.business-shell .page-header.has-back > button:first-child { padding: 0; justify-items: start; }
+.business-shell .list-page-title { padding-inline: 0; }
+.mode-sheet .mode-arrow { display: none; }
+.mode-sheet .mode-symbol { background: transparent; width: 44px; height: 44px; padding: 4px; }
+.confirmation-sheet.meditime-sheet { min-height: 0; gap: 20px; }
+.confirmation-actions { display: grid; gap: 10px; }
+.destructive-button.auth-button { background: #c9294b; color: white; }
+.all-specialties { display: grid; gap: 4px; }
+.all-specialties a { display: flex; gap: 14px; padding: 14px 0; align-items: center; border-bottom: 1px solid var(--border); }
+.search-filter-sheet .filter-switch { margin-top: 22px; }
+.search-filter-sheet .filter-switch [data-slot="switch-thumb"] { background: white; }

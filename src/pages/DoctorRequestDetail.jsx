@@ -3,7 +3,7 @@ import { useAuth } from '../auth/AuthContext.jsx';
 import { api } from '../lib/api.js';
 import AppointmentDetail from './AppointmentDetail.jsx';
 import { AuthButton, AuthNotice } from '../components/AuthUI.jsx';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../components/ui/dialog.jsx';
+import ConfirmationSheet from '../components/ConfirmationSheet.jsx';
 
 function DecisionActions({ appointment, onResult, onError }) {
   const [choice, setChoice] = useState(null);
@@ -18,7 +18,7 @@ function DecisionActions({ appointment, onResult, onError }) {
     finally { setBusy(false); }
   }
   if (appointment.status !== 'pending') return <p className="field-hint">Cette demande ne peut plus être confirmée ou déclinée.</p>;
-  return <div className="decision-actions"><AuthButton disabled={busy} onClick={() => setChoice('accept')}>Confirmer la demande</AuthButton><AuthButton variant="outline" disabled={busy} onClick={() => setChoice('decline')}>Décliner</AuthButton><Dialog open={Boolean(choice)} onOpenChange={value => { if (!busy && !value) setChoice(null); }}><DialogContent><DialogTitle>{choice === 'accept' ? 'Confirmer ce rendez-vous ?' : 'Décliner cette demande ?'}</DialogTitle><DialogDescription>{choice === 'accept' ? 'La confirmation attribue ce créneau à ce patient. Le serveur contrôle sa disponibilité.' : 'Le patient verra la décision dans le suivi de sa demande.'}</DialogDescription><AuthButton disabled={busy} onClick={decide}>{busy ? 'Enregistrement…' : choice === 'accept' ? 'Confirmer' : 'Décliner la demande'}</AuthButton><AuthButton variant="outline" disabled={busy} onClick={() => setChoice(null)}>Annuler</AuthButton></DialogContent></Dialog></div>;
+  return <div className="decision-actions"><AuthButton disabled={busy} onClick={() => setChoice('accept')}>Confirmer la demande</AuthButton><AuthButton variant="outline" disabled={busy} onClick={() => setChoice('decline')}>Décliner</AuthButton><ConfirmationSheet open={Boolean(choice)} onOpenChange={value => { if (!value) setChoice(null); }} title={choice === 'accept' ? 'Confirmer ce rendez-vous ?' : 'Décliner cette demande ?'} description={choice === 'accept' ? 'Ce créneau sera réservé à ce patient.' : 'Le patient verra cette décision dans le suivi de sa demande.'} confirmLabel={choice === 'accept' ? 'Confirmer' : 'Décliner la demande'} busy={busy} onConfirm={decide} destructive={choice === 'decline'} /></div>;
 }
 export default function DoctorRequestDetail() {
   const { notifyDataChanged } = useAuth();

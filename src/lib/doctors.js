@@ -27,6 +27,18 @@ export async function getDoctorById(id, { signal } = {}) {
   if (!data.doctor) throw new ApiError('Le profil médecin est illisible.', 200, 'INVALID_RESPONSE');
   return doctorForView(data.doctor);
 }
+export async function getDoctorCities({ signal } = {}) {
+  const cities = new Set();
+  let page = 1;
+  let more = true;
+  while (more) {
+    const data = await searchDoctors({ page, limit: 50, signal });
+    for (const doctor of data.doctors) if (doctor.city) cities.add(doctor.city);
+    more = page * data.pagination.limit < data.pagination.total;
+    page += 1;
+  }
+  return [...cities].sort((a, b) => a.localeCompare(b, 'fr'));
+}
 export async function getDoctorSlots(id, { from, to, signal } = {}) {
   const params = new URLSearchParams();
   if (from) params.set('from', from);

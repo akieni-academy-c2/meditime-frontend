@@ -1,5 +1,5 @@
 import { useSearchParams, Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, ChevronRight, RefreshCw } from 'lucide-react';
+import { Calendar, Clock, MapPin, ChevronRight } from 'lucide-react';
 import PersonAvatar from '../components/PersonAvatar.jsx';
 import { StatusBadge } from '../components/StatusBadge.jsx';
 import { LoadingState, EmptyState, ErrorState } from '../components/States.jsx';
@@ -13,7 +13,7 @@ export default function MesRendezVous() {
   const status = tabs.some(tab => tab.key === params.get('status')) ? params.get('status') : 'pending';
   const page = Math.max(1, Number(params.get('page')) || 1);
   const resource = useResource('/me/appointments?' + new URLSearchParams({ status, page, limit: 12 }));
-  return <><header className="list-page-title"><h1>Mes rendez-vous</h1><button type="button" aria-label="Actualiser les rendez-vous" disabled={resource.loading} onClick={resource.reload}><RefreshCw size={18} /></button></header>
+  return <><header className="list-page-title"><h1>Mes rendez-vous</h1></header>
     <div className="tabs" role="tablist" aria-label="Statut des demandes">{tabs.map(tab => <button key={tab.key} type="button" role="tab" aria-selected={status === tab.key} className="tab-button" data-active={status === tab.key} onClick={() => setParams({ status: tab.key })}>{tab.label}</button>)}</div>
     {resource.loading && <LoadingState label="Chargement de vos rendez-vous…" />}{resource.error && <ErrorState message={resource.error} onRetry={resource.reload} />}
     {resource.data && <><h2 className="results-count" role="status">{tabs.find(tab => tab.key === status).label} ({resource.data.pagination.total})</h2>{!resource.data.appointments.length && <EmptyState title="Aucun rendez-vous ici" description="Les demandes correspondant à ce statut apparaîtront ici." />}

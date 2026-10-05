@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowRight, CalendarDays, HelpCircle, Info, LogOut, Stethoscope, UserRound, Users } from 'lucide-react';
+import { ArrowRight, CalendarDays, HelpCircle, LogOut, Stethoscope, UserRound, Users } from 'lucide-react';
 import { useAuth } from '../auth/AuthContext.jsx';
 import { useMode } from '../auth/ModeContext.jsx';
 import { SettingsRow } from '../components/CardsUI.jsx';
 import { AuthButton, AuthNotice } from '../components/AuthUI.jsx';
+import ConfirmationSheet from '../components/ConfirmationSheet.jsx';
 import BottomSheet from '../components/BottomSheet.jsx';
 
 export default function Profile() {
@@ -24,10 +25,11 @@ export default function Profile() {
     <section className="settings-group"><h2>Compte</h2><SettingsRow icon={UserRound} title="Mes informations" description="Nom, email, téléphone" onClick={() => navigate('/profil/informations')} /></section>
     {allowedModes.includes('doctor') && <section className="settings-group"><h2>Médecin</h2><SettingsRow icon={Stethoscope} title="Informations médecin" description="Spécialité, cabinet, adresse" onClick={() => { changeMode('doctor'); navigate('/profil/medecin'); }} /><SettingsRow icon={CalendarDays} title="Configurer le planning" description="Horaires et disponibilités" onClick={() => { changeMode('doctor'); navigate('/planning'); }} /></section>}
     <section className="settings-group"><h2>Assistance</h2><SettingsRow icon={HelpCircle} title="Aide" description="Connexion et rendez-vous" onClick={() => setSheet('help')} /></section>
-    <section className="settings-group"><h2>Mode</h2><SettingsRow icon={Users} title={mode === 'doctor' ? 'Mode Médecin' : 'Mode Patient'} description="Utilisez le même compte" onClick={() => setSheet('mode')} /></section>
-    {error && <AuthNotice error>{error}</AuthNotice>}<AuthButton className="logout-button" variant="outline" disabled={busy} onClick={disconnect}><LogOut size={20} />{busy ? 'Déconnexion…' : 'Déconnexion'}</AuthButton>
-    <BottomSheet className={`business-sheet ${sheet === 'mode' ? 'mode-sheet' : ''}`} open={Boolean(sheet)} onOpenChange={value => { if (!value) setSheet(null); }} title={sheet === 'mode' ? 'Changer de mode' : 'Aide'} description={sheet === 'mode' ? 'Le même compte, deux expériences.' : 'Quelques repères pour utiliser MediTime.'}>
-      {sheet === 'mode' ? <><p className="mode-intro">Accédez à votre espace patient ou médecin avec un seul et même compte.</p><div className="mode-options">{allowedModes.map(value => <button key={value} type="button" aria-pressed={mode === value} onClick={() => { changeMode(value); setSheet(null); navigate('/accueil'); }}><span><strong>Mode {value === 'doctor' ? 'Médecin' : 'Patient'}</strong><small>{value === 'doctor' ? 'Gérez votre planning et vos demandes.' : 'Prenez rendez-vous et suivez vos demandes.'}</small><ArrowRight className="mode-arrow" size={21} /></span>{value === 'doctor' ? <Stethoscope className="mode-symbol" /> : <UserRound className="mode-symbol" />}</button>)}</div><p className="planning-note"><Info size={18} /><span>Vous pouvez changer de mode à tout moment depuis votre profil.</span></p>{!allowedModes.includes('doctor') && <p className="page-intro">Le mode médecin nécessite une habilitation de votre compte.</p>}</> : <p className="page-intro">Une demande de rendez-vous reste en attente jusqu’à la décision du médecin. Si une erreur apparaît, vérifiez votre connexion puis réessayez. Le changement de mode conserve le même compte.</p>}
+    {allowedModes.includes('doctor') && <section className="settings-group"><h2>Mode</h2><SettingsRow icon={Users} title={mode === 'doctor' ? 'Mode Médecin' : 'Mode Patient'} description="Utilisez le même compte" onClick={() => setSheet('mode')} /></section>}
+    {error && <AuthNotice error>{error}</AuthNotice>}<AuthButton className="logout-button" variant="outline" disabled={busy} onClick={() => setSheet('logout')}><LogOut size={20} />{busy ? 'Déconnexion…' : 'Déconnexion'}</AuthButton>
+    <BottomSheet className={`business-sheet ${sheet === 'mode' ? 'mode-sheet' : ''}`} open={sheet === 'mode' || sheet === 'help'} onOpenChange={value => { if (!value) setSheet(null); }} title={sheet === 'mode' ? 'Changer de mode' : 'Aide'} description={sheet === 'mode' ? 'Choisissez votre espace.' : 'Quelques repères pour utiliser MediTime.'}>
+      {sheet === 'mode' ? <><div className="mode-options">{allowedModes.map(value => <button key={value} type="button" aria-pressed={mode === value} onClick={() => { changeMode(value); setSheet(null); navigate('/accueil'); }}><span><strong>Mode {value === 'doctor' ? 'Médecin' : 'Patient'}</strong><small>{value === 'doctor' ? 'Gérez votre planning et vos demandes.' : 'Prenez rendez-vous et suivez vos demandes.'}</small><ArrowRight className="mode-arrow" size={21} /></span>{value === 'doctor' ? <Stethoscope className="mode-symbol" /> : <UserRound className="mode-symbol" />}</button>)}</div></> : <p className="page-intro">Une demande de rendez-vous reste en attente jusqu’à la décision du médecin. Si une erreur apparaît, vérifiez votre connexion puis réessayez. Le changement de mode conserve le même compte.</p>}
     </BottomSheet>
+    <ConfirmationSheet open={sheet === 'logout'} onOpenChange={value => { if (!value) setSheet(null); }} title="Se déconnecter ?" description="Vous devrez vous reconnecter pour accéder à vos rendez-vous." confirmLabel="Se déconnecter" cancelLabel="Rester connecté" busy={busy} onConfirm={disconnect} destructive />
   </>;
 }
