@@ -24,5 +24,6 @@ export default function DoctorRequestDetail() {
   const { notifyDataChanged } = useAuth();
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
-  return <>{error && <AuthNotice error>{error}</AuthNotice>}{notice && <AuthNotice>{notice}</AuthNotice>}<AppointmentDetail doctorView>{appointment => <DecisionActions appointment={appointment} onResult={result => { setError(''); setNotice(result.status === 'confirmed' ? 'Le rendez-vous est confirmé.' : result.status === 'declined' ? 'La demande est déclinée.' : 'La demande a été mise à jour.'); notifyDataChanged(); }} onError={(message, refresh) => { setError(message); setNotice(''); if (refresh) notifyDataChanged(); }} />}</AppointmentDetail></>;
+  const [decision, setDecision] = useState(null);
+  return <>{error && <AuthNotice error>{error}</AuthNotice>}{notice && <AuthNotice>{notice}</AuthNotice>}<AppointmentDetail doctorView decision={decision}>{appointment => <DecisionActions appointment={appointment} onResult={result => { setError(''); setDecision({ id: result.id, status: result.status }); setNotice(result.status === 'confirmed' ? '' : result.status === 'declined' ? 'La demande est déclinée.' : 'La demande a été mise à jour.'); notifyDataChanged(); }} onError={(message, refresh) => { setError(message); setNotice(''); setDecision(null); if (refresh) notifyDataChanged(); }} />}</AppointmentDetail></>;
 }

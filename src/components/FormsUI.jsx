@@ -3,6 +3,13 @@ import { Input } from './ui/input.jsx';
 import { Label } from './ui/label.jsx';
 import { Textarea } from './ui/textarea.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx';
+import { NativeSelect, NativeSelectOption } from './ui/native-select.jsx';
+
+export function NativeSelectField({ label, options, ...props }) {
+  const generatedId = useId();
+  const id = props.id || generatedId;
+  return <div className="mt-field"><Label htmlFor={id}>{label}</Label><NativeSelect {...props} id={id}>{options.map(({ value, label: text }) => <NativeSelectOption key={value} value={value}>{text}</NativeSelectOption>)}</NativeSelect></div>;
+}
 
 export function FormField({ label, hint, error, icon: Icon, multiline = false, ...props }) {
   const generatedId = useId();
