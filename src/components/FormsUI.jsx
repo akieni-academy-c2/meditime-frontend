@@ -2,13 +2,13 @@ import { useId } from 'react';
 import { Input } from './ui/input.jsx';
 import { Label } from './ui/label.jsx';
 import { Textarea } from './ui/textarea.jsx';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select.jsx';
 import { NativeSelect, NativeSelectOption } from './ui/native-select.jsx';
 
-export function NativeSelectField({ label, options, ...props }) {
+export function NativeSelectField({ label, options, placeholder = 'Choisir', ...props }) {
   const generatedId = useId();
   const id = props.id || generatedId;
-  return <div className="mt-field"><Label htmlFor={id}>{label}</Label><NativeSelect {...props} id={id}>{options.map(({ value, label: text }) => <NativeSelectOption key={value} value={value}>{text}</NativeSelectOption>)}</NativeSelect></div>;
+  const showPlaceholder = props.value === undefined && props.defaultValue === undefined;
+  return <div className="mt-field"><Label htmlFor={id}>{label}</Label><NativeSelect {...(showPlaceholder && { defaultValue: '' })} {...props} id={id}>{showPlaceholder && <NativeSelectOption value="" disabled>{placeholder}</NativeSelectOption>}{options.map(({ value, label: text }) => <NativeSelectOption key={value} value={value}>{text}</NativeSelectOption>)}</NativeSelect></div>;
 }
 
 export function FormField({ label, hint, error, icon: Icon, multiline = false, ...props }) {
@@ -18,9 +18,4 @@ export function FormField({ label, hint, error, icon: Icon, multiline = false, .
   return <div className="mt-field"><Label htmlFor={id}>{label}</Label><div className={Icon ? 'mt-input-icon' : ''}>{Icon && <Icon size={20} aria-hidden="true" />}<Control {...props} id={id} aria-invalid={Boolean(error)} aria-describedby={error || hint ? `${id}-hint` : undefined} /></div>
     {(error || hint) && <p id={`${id}-hint`} className={error ? 'field-error' : 'field-hint'} role={error ? 'alert' : undefined}>{error || hint}</p>}
   </div>;
-}
-
-export function SelectField({ label, options, placeholder = 'Choisir', ...props }) {
-  const id = useId();
-  return <div className="mt-field"><Label htmlFor={id}>{label}</Label><Select {...props}><SelectTrigger id={id}><SelectValue placeholder={placeholder} /></SelectTrigger><SelectContent>{options.map(({ value, label: text }) => <SelectItem key={value} value={value}>{text}</SelectItem>)}</SelectContent></Select></div>;
 }

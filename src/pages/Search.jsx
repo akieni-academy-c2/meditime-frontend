@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Search as SearchIcon, SlidersHorizontal } from 'lucide-react';
 import { useResource } from '../lib/useResource.js';
-import { FormField, SelectField } from '../components/FormsUI.jsx';
+import { FormField, NativeSelectField } from '../components/FormsUI.jsx';
 import { PageHeader } from '../components/NavigationUI.jsx';
 import { AuthButton, AuthNotice } from '../components/AuthUI.jsx';
 import { EmptyState } from '../components/CardsUI.jsx';
@@ -41,7 +41,7 @@ export default function Search() {
     {(params.get('city') || params.get('specialtyId') || params.get('availableBefore')) && <div className="active-filters"><Button variant="outline" onClick={() => { setParams({}); setCity(''); setSpecialtyId('all'); setSoon(false); }}>Effacer les filtres</Button></div>}
     <ResourceState resource={doctors} />{doctors.data && <><p className="results-count" role="status">{doctors.data.pagination.total} médecin(s) trouvé(s)</p><div className="card-list">{doctors.data.doctors.map(doctor => <DoctorCard key={doctor.id} doctor={doctor} onClick={() => navigate(`/medecins/${doctor.id}`)} />)}</div>{!doctors.data.doctors.length && <EmptyState title="Aucun médecin trouvé" description="Essayez un autre nom, une autre spécialité ou retirez les filtres." />}<Pagination pagination={doctors.data.pagination} onPage={page => { const next = new URLSearchParams(params); next.set('page', page); setParams(next); }} /></>}
     <BottomSheet open={filters} onOpenChange={setFilters} title="Filtrer les médecins" description="Affinez votre recherche." footer={<AuthButton onClick={apply}>Afficher les résultats</AuthButton>}>
-      <FormField label="Ville" value={city} maxLength={100} onChange={event => setCity(event.target.value)} />{specialties.error && <AuthNotice error>{specialties.error}</AuthNotice>}<SelectField label="Spécialité" value={specialtyId} onValueChange={setSpecialtyId} options={[{ value: 'all', label: 'Toutes les spécialités' }, ...(specialties.data?.specialties || []).map(item => ({ value: item.id, label: item.name }))]} /><label className="filter-switch">Disponibles dans les 7 prochains jours<Switch checked={soon} onCheckedChange={setSoon} aria-label="Disponibles dans les 7 prochains jours" /></label>
+      <FormField label="Ville" value={city} maxLength={100} onChange={event => setCity(event.target.value)} />{specialties.error && <AuthNotice error>{specialties.error}</AuthNotice>}<NativeSelectField label="Spécialité" value={specialtyId} onChange={event => setSpecialtyId(event.target.value)} options={[{ value: 'all', label: 'Toutes les spécialités' }, ...(specialties.data?.specialties || []).map(item => ({ value: item.id, label: item.name }))]} /><label className="filter-switch">Disponibles dans les 7 prochains jours<Switch checked={soon} onCheckedChange={setSoon} aria-label="Disponibles dans les 7 prochains jours" /></label>
     </BottomSheet>
   </>;
 }

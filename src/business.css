@@ -184,7 +184,7 @@
 .business-shell .duration-setting { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-top: 16px; }
 .business-shell .duration-setting .mt-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex: 1; margin: 0; }
 .business-shell .duration-setting label { font-size: .78rem; font-weight: 500; }
-.business-shell .duration-setting [data-slot='select-trigger'] { width: 132px; min-height: 38px; font-size: .76rem; background: white; padding: 8px; }
+.business-shell .duration-setting [data-slot='native-select'] { width: 132px; min-height: 38px; font-size: .76rem; background: white; padding: 8px; }
 .business-shell .weekly-summary { display: grid; gap: 6px; margin: 12px 0 16px; }
 .business-shell .weekly-summary-day { display: grid; grid-template-columns: 68px 32px minmax(0, 1fr); align-items: center; gap: 10px; padding: 6px 10px; min-height: 46px; border: 1px solid var(--border); border-radius: 12px; }
 .business-shell .weekly-summary-day > strong { font-size: .76rem; font-weight: 500; }
@@ -210,7 +210,7 @@
 .business-sheet .exception-fields { margin-top: 16px; }
 .business-sheet .exception-fields .mt-field { margin-bottom: 12px; gap: 6px; }
 .business-sheet .exception-fields .mt-field label { font-size: .72rem; font-weight: 400; }
-.business-sheet .exception-fields .mt-field [data-slot='input'], .business-sheet .exception-fields .mt-field [data-slot='select-trigger'] { background: white; min-height: 40px; font-size: .8rem; }
+.business-sheet .exception-fields .mt-field [data-slot='input'], .business-sheet .exception-fields .mt-field [data-slot='native-select'] { background: white; min-height: 40px; font-size: .8rem; }
 .business-shell .settings-group { margin-top: 14px; padding: 10px 12px; }
 .business-shell .settings-group h2 { font-size: .85rem; margin: 0 0 2px; }
 .business-shell .settings-group .settings-row { min-height: 56px; padding: 8px 2px; gap: 14px; }
@@ -226,7 +226,7 @@
 .mode-sheet .mode-arrow { background: var(--primary); color: white; border-radius: 50%; width: 32px; height: 32px; padding: 7px; margin-top: 10px; }
 .business-shell .mt-field { margin-bottom: 20px; }
 .business-shell .mt-field label { font-size: .85rem; }
-.business-shell .mt-field [data-slot='input'], .business-shell .mt-field [data-slot='select-trigger'] { background: white; min-height: 46px; font-size: .87rem; }
+.business-shell .mt-field [data-slot='input'], .business-shell .mt-field [data-slot='native-select'] { background: white; min-height: 46px; font-size: .87rem; }
 .business-shell .profile-photo > p { font-size: .87rem; font-weight: 500; }
 .business-shell .profile-photo .profile-identity { margin: 12px 0 26px; }
 .business-shell .profile-photo .person-avatar { width: 100px; height: 110px; }
@@ -238,7 +238,7 @@
   .business-shell .doctor-card-avatar { flex-basis: 58px; width: 58px; height: 64px; }
   .business-shell .weekly-summary-day { grid-template-columns: 59px 30px minmax(0, 1fr); gap: 7px; }
   .business-shell .duration-setting { gap: 8px; }
-  .business-shell .duration-setting [data-slot='select-trigger'] { width: 116px; }
+  .business-shell .duration-setting [data-slot='native-select'] { width: 116px; }
   .consultation-day { font-size: .61rem; }
 }
 
@@ -309,3 +309,13 @@
 .cabinet-collapse > div { min-height: 0; overflow: hidden; }
 
 .business-shell .native-select { height: 46px; font-size: .87rem; }
+
+.business-shell .duration-setting .native-select-wrapper { width: 132px; flex-shrink: 0; }
+.business-shell .search-filters .native-select-wrapper { width: auto; max-width: 100%; }
+.business-shell .search-filters .native-select-wrapper > svg { right: 8px; width: 13px; }
+.business-shell .search-filters .native-select { background-image: none; }
+@media (max-width: 359px) { .business-shell .duration-setting .native-select-wrapper { width: 116px; } }
+
+.native-select-wrapper .native-select { background-image: none; outline: none; }
+.business-sheet .mt-field [data-slot='native-select'] { background: white; }
+.business-shell .duration-setting [data-slot='native-select'] { height: 38px; }

@@ -10,7 +10,8 @@ import Pagination from '../components/Pagination.jsx';
 import { AuthButton } from '../components/AuthUI.jsx';
 import { useResource } from '../lib/useResource.js';
 import { getDoctorCities, searchDoctors } from '../lib/doctors.js';
-import { SelectField } from '../components/FormsUI.jsx';
+import { NativeSelectField } from '../components/FormsUI.jsx';
+import { NativeSelect, NativeSelectOption } from '../components/ui/native-select.jsx';
 import { Switch } from '../components/ui/switch.jsx';
 
 export default function Recherche() {
@@ -83,13 +84,13 @@ export default function Recherche() {
     <form className="search-query" onSubmit={submit}><SearchBar value={name} onChange={setName} placeholder="Modifier ma recherche" /></form>
     <div className="search-filters"><button type="button" onClick={openFilters}>{params.get('city') || 'Ville'}</button><button type="button" aria-pressed={Boolean(availableBefore)} onClick={() => updateFilter('availableBefore', availableBefore ? '' : new Date(Date.now() + 7 * 86400000).toISOString())}>Disponible sous 7 jours</button>
       <div className="filter-row"><label htmlFor="specialty-filter" className="sr-only">Filtrer par spécialité</label>
-        <select id="specialty-filter" className="filter-select" style={{ width: `${(specialties.data?.specialties.find(item => item.id === specialtyId)?.name || 'Spécialité').length + 5}ch` }} value={specialtyId} onChange={event => updateFilter('specialtyId', event.target.value)}>
-          <option value="">Spécialité</option>{specialties.data?.specialties.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
-        </select>
+        <NativeSelect id="specialty-filter" className="filter-select" style={{ width: `${(specialties.data?.specialties.find(item => item.id === specialtyId)?.name || 'Spécialité').length + 5}ch` }} value={specialtyId} onChange={event => updateFilter('specialtyId', event.target.value)}>
+          <NativeSelectOption value="">Spécialité</NativeSelectOption>{specialties.data?.specialties.map(item => <NativeSelectOption key={item.id} value={item.id}>{item.name}</NativeSelectOption>)}
+        </NativeSelect>
       </div></div>
     <BottomSheet className="business-sheet search-filter-sheet" open={filtersOpen} onOpenChange={setFiltersOpen} title="Filtres de recherche" footer={<AuthButton type="submit" form="city-search-form">Afficher les résultats</AuthButton>}><form id="city-search-form" onSubmit={applyFilters}>
-      <SelectField label="Ville" value={city || 'all'} onValueChange={value => setCity(value === 'all' ? '' : value)} disabled={citiesLoading} options={[{ value: 'all', label: 'Toutes les villes' }, ...[...new Set([...cities, ...(city ? [city] : [])])].map(value => ({ value, label: value }))]} />{citiesLoading && <LoadingState layout="form" />}{citiesError && <p role="alert" className="field-hint">{citiesError}</p>}
-      <div className="form-field"><label htmlFor="sheet-specialty">Spécialité</label><select id="sheet-specialty" className="filter-select" value={draftSpecialty} onChange={event => setDraftSpecialty(event.target.value)}><option value="">Toutes les spécialités</option>{specialties.data?.specialties.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div>
+      <NativeSelectField label="Ville" value={city || 'all'} onChange={event => setCity(event.target.value === 'all' ? '' : event.target.value)} disabled={citiesLoading} options={[{ value: 'all', label: 'Toutes les villes' }, ...[...new Set([...cities, ...(city ? [city] : [])])].map(value => ({ value, label: value }))]} />{citiesLoading && <LoadingState layout="form" />}{citiesError && <p role="alert" className="field-hint">{citiesError}</p>}
+      <div className="form-field"><label htmlFor="sheet-specialty">Spécialité</label><NativeSelect id="sheet-specialty" className="filter-select" value={draftSpecialty} onChange={event => setDraftSpecialty(event.target.value)}><NativeSelectOption value="">Toutes les spécialités</NativeSelectOption>{specialties.data?.specialties.map(item => <NativeSelectOption key={item.id} value={item.id}>{item.name}</NativeSelectOption>)}</NativeSelect></div>
       <label className="filter-switch" htmlFor="sheet-available">Disponible sous 7 jours<Switch id="sheet-available" checked={draftAvailable} onCheckedChange={setDraftAvailable} /></label>
       <button type="button" className="text-action" onClick={() => { setCity(''); setDraftSpecialty(''); setDraftAvailable(false); }}>Réinitialiser les filtres</button>
     </form></BottomSheet>
