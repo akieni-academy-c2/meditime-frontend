@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
-import { Smartphone } from 'lucide-react';
+import DesktopGateway from './components/DesktopGateway.jsx';
 import { AuthProvider } from './auth/AuthContext.jsx';
 import { ModeProvider } from './auth/ModeContext.jsx';
 import Profile from './pages/Profile.jsx';
@@ -20,7 +20,6 @@ import Planning from './pages/Planning.jsx';
 import WeeklyPlanning from './pages/WeeklyPlanning.jsx';
 import Login from './pages/Login.jsx';
 import UIKit from './pages/UIKit.jsx';
-import { Brand } from './components/Brand.jsx';
 import AppShell from './components/AppShell.jsx';
 import Home from './pages/Home.jsx';
 import InstallAfterLogin from './pwa/InstallAfterLogin.jsx';
@@ -35,9 +34,7 @@ export default function App() {
     return () => query.removeEventListener('change', update);
   }, []);
   if (import.meta.env.DEV && location.pathname === '/ui-kit') return <UIKit />;
-  if (!mobile) return <main className="device-message"><Brand /><div className="device-icon"><Smartphone size={40} /></div>
-    <h1>MediTime vous accompagne sur mobile et tablette</h1><p>Ouvrez cette adresse sur votre téléphone ou votre tablette pour continuer.</p>
-  </main>;
+  if (!mobile) return <DesktopGateway />;
   return <div className="mobile-app"><AuthProvider><ModeProvider><Routes>
     <Route path="/connexion" element={<main><Login /></main>} />
     <Route element={<AppShell />}>
