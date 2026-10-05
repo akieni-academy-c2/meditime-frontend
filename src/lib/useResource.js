@@ -10,7 +10,7 @@ export function useResource(path) {
   useEffect(() => {
     if (!path) return;
     const controller = new AbortController();
-    setResult(previous => ({ path, data: previous.path === path ? previous.data : null, error: '', loading: true }));
+    setResult({ path, data: null, error: '', loading: true });
     api(path, { signal: controller.signal }).then(data => {
       if (!controller.signal.aborted) setResult({ path, data, error: '', loading: false });
     }).catch(error => {
