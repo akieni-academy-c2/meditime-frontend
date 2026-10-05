@@ -1,74 +1,36 @@
-// src/lib/doctors.js
-// Client API pour les médecins.
-// Utilise le mock tant que le backend n'expose pas les routes.
-
-import { api } from './api.js';
-import { MOCK_DOCTORS, MOCK_SPECIALTIES, simulateDelay } from './data/mockDoctors.js';
-import { MOCK_SLOTS } from './data/mockSlots.js';
-
-// 👇 Passer à `false` quand le backend #6 sera prêt
-const USE_MOCK = true;
-
-/**
- * Récupère la liste des spécialités.
- * @returns {Promise<Array<{slug: string, label: string}>>}
- */
-export async function getSpecialties() {
-  if (USE_MOCK) {
-    await simulateDelay(150);
-    return MOCK_SPECIALTIES;
-  }
-  return api('/specialties');
+import { api, ApiError } from './api.js';
+const payload = response => response.data ?? response;
+export function doctorForView(doctor) {
+  const user = doctor.user || doctor;
+  return { ...doctor, firstName: user.firstName, lastName: user.lastName,
+    photoUrl: user.avatarUrl || doctor.avatarUrl || doctor.photoUrl,
+    specialtyLabel: doctor.specialty?.name, consultationDuration: doctor.consultationMinutes,
+    nextAvailableAt: doctor.nextAvailableSlot?.startsAt };
 }
-
-/**
- * Recherche des médecins selon des critères.
- * @param {{ name?: string, specialty?: string, city?: string }} filters
- * @returns {Promise<Array>}
- */
-export async function searchDoctors({ name = '', specialty = '', city = '' } = {}) {
-  if (USE_MOCK) {
-    await simulateDelay(300);
-    return MOCK_DOCTORS.filter((doctor) => {
-      const fullName = `${doctor.firstName} ${doctor.lastName}`.toLowerCase();
-      const matchesName = !name || fullName.includes(name.toLowerCase());
-      const matchesSpecialty = !specialty || doctor.specialty === specialty;
-      const matchesCity = !city || doctor.city.toLowerCase().includes(city.toLowerCase());
-      return matchesName && matchesSpecialty && matchesCity;
-    });
-  }
-
+export async function getSpecialties({ signal } = {}) {
+  const data = payload(await api('/specialties', { signal }));
+  if (!Array.isArray(data.specialties)) throw new ApiError('La liste des spécialités est illisible.', 200, 'INVALID_RESPONSE');
+  return data.specialties;
+}
+export async function searchDoctors({ name = '', specialtyId = '', city = '', page = 1, limit = 12, signal } = {}) {
+  const params = new URLSearchParams({ page, limit });
+  if (name.trim()) params.set('q', name.trim());
+  if (specialtyId) params.set('specialtyId', specialtyId);
+  if (city.trim()) params.set('city', city.trim());
+  const data = payload(await api('/doctors?' + params, { signal }));
+  if (!Array.isArray(data.doctors) || !data.pagination) throw new ApiError('Les résultats de recherche sont illisibles.', 200, 'INVALID_RESPONSE');
+  return { ...data, doctors: data.doctors.map(doctorForView) };
+}
+export async function getDoctorById(id, { signal } = {}) {
+  const data = payload(await api('/doctors/' + encodeURIComponent(id), { signal }));
+  if (!data.doctor) throw new ApiError('Le profil médecin est illisible.', 200, 'INVALID_RESPONSE');
+  return doctorForView(data.doctor);
+}
+export async function getDoctorSlots(id, { from, to, signal } = {}) {
   const params = new URLSearchParams();
-  if (name) params.set('name', name);
-  if (specialty) params.set('specialty', specialty);
-  if (city) params.set('city', city);
-
-  const query = params.toString();
-  return api(`/doctors${query ? `?${query}` : ''}`);
-}
-
-/**
- * Récupère un médecin par son ID.
- * @param {string} id
- * @returns {Promise<Object|null>}
- */
-export async function getDoctorById(id) {
-  if (USE_MOCK) {
-    await simulateDelay(200);
-    return MOCK_DOCTORS.find((doctor) => doctor.id === id) || null;
-  }
-  return api(`/doctors/${id}`);
-}
-
-/**
- * Récupère les créneaux disponibles d'un médecin.
- * @param {string} id
- * @returns {Promise<Array>}
- */
-export async function getDoctorSlots(id) {
-  if (USE_MOCK) {
-    await simulateDelay(250);
-    return MOCK_SLOTS;
-  }
-  return api(`/doctors/${id}/slots`);
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  const data = payload(await api('/doctors/' + encodeURIComponent(id) + '/slots?' + params, { signal }));
+  if (!Array.isArray(data.slots) || !data.timezone) throw new ApiError('Les créneaux du médecin sont illisibles.', 200, 'INVALID_RESPONSE');
+  return data;
 }

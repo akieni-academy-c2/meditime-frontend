@@ -17,7 +17,7 @@ npm run preview
 
 Le build est dans `dist/`. Les écrans email et OTP reprennent la maquette. Les connexions email et Google redirigent vers `/accueil`. La structure patient comprend un en-tête, le contenu principal et une navigation basse Accueil / Rendez-vous / Profil. Recherche, rendez-vous et profil affichent un contenu provisoire explicite ; la déconnexion fonctionne depuis Profil. Les routes de cet espace nécessitent une session. Au-delà de 1024 px, un message invite à utiliser un téléphone ; l'interface mobile reste centrée sur tablette.
 
-Le UI kit se consulte en développement sur `/ui-kit` : logo, champs, OTP à six cases, boutons et messages. Les composants shadcn sont dans `src/components/ui`, les adaptations MediTime dans `src/components/AuthUI.jsx` et les couleurs/espacements dans `src/styles.css`.
+Le UI kit se consulte en développement sur `/ui-kit`, sur ordinateur et mobile : fondations, formulaires, navigation, cartes/statuts, planning et sheets. Les exemples sont interactifs et fictifs. La documentation des imports et props est dans [UI-KIT.md](UI-KIT.md). Les composants shadcn sont dans `src/components/ui`, les adaptations MediTime dans `src/components/AuthUI.jsx` et les couleurs/espacements dans `src/styles.css`.
 
 La session utilise un cookie HttpOnly avec `credentials: 'include'`. Le CSRF reste en mémoire et accompagne les écritures. Aucun jeton dans localStorage. Google utilise le bouton officiel Identity Services en popup, aligné au centre ; aucun callback OAuth backend.
 

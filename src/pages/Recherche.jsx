@@ -1,134 +1,62 @@
-// src/pages/Recherche.jsx
-// Page de recherche des médecins (issue #7).
-
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { SearchBar } from '@/components/SearchBar.jsx';
-import { DoctorCard } from '@/components/DoctorCard.jsx';
-import { LoadingState, EmptyState, ErrorState } from '@/components/States.jsx';
-import { getSpecialties, searchDoctors } from '@/lib/doctors.js';
+import { SearchBar } from '../components/SearchBar.jsx';
+import { DoctorCard } from '../components/DoctorCard.jsx';
+import { LoadingState, EmptyState, ErrorState } from '../components/States.jsx';
+import Pagination from '../components/Pagination.jsx';
+import { AuthButton } from '../components/AuthUI.jsx';
+import { useResource } from '../lib/useResource.js';
+import { searchDoctors } from '../lib/doctors.js';
 
 export default function Recherche() {
-  const [searchParams, setSearchParams] = useSearchParams();
-
-  const [name, setName] = useState(searchParams.get('name') || '');
-  const [specialty, setSpecialty] = useState(searchParams.get('specialty') || '');
-
-  const [specialties, setSpecialties] = useState([]);
-  const [doctors, setDoctors] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  // Charger les spécialités une seule fois
+  const [params, setParams] = useSearchParams();
+  const query = params.toString();
+  const [name, setName] = useState(params.get('q') || '');
+  const [city, setCity] = useState(params.get('city') || '');
+  const [result, setResult] = useState({ query: null, loading: true, error: '', data: null });
+  const [revision, setRevision] = useState(0);
+  const specialties = useResource('/specialties');
+  const specialtyId = params.get('specialtyId') || '';
+  const page = Math.max(1, Number(params.get('page')) || 1);
+  useEffect(() => { setName(params.get('q') || ''); setCity(params.get('city') || ''); }, [query]);
   useEffect(() => {
-    let cancelled = false;
-    getSpecialties()
-      .then((data) => {
-        if (!cancelled) setSpecialties(data);
-      })
-      .catch(() => {
-        if (!cancelled) setSpecialties([]);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
-  // Rechercher les médecins à chaque changement de filtre
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    setError('');
-
-    // Sync URL
-    const params = new URLSearchParams();
-    if (name) params.set('name', name);
-    if (specialty) params.set('specialty', specialty);
-    setSearchParams(params, { replace: true });
-
-    searchDoctors({ name, specialty })
-      .then((data) => {
-        if (!cancelled) setDoctors(data);
-      })
-      .catch((err) => {
-        if (!cancelled) setError(err?.message || 'Une erreur est survenue.');
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [name, specialty, setSearchParams]);
-
-  function retry() {
-    setError('');
-    setLoading(true);
-    searchDoctors({ name, specialty })
-      .then(setDoctors)
-      .catch((err) => setError(err?.message || 'Une erreur est survenue.'))
-      .finally(() => setLoading(false));
+    const controller = new AbortController();
+    setResult({ query, loading: true, error: '', data: null });
+    searchDoctors({ name: params.get('q') || '', city: params.get('city') || '', specialtyId, page, signal: controller.signal })
+      .then(data => { if (!controller.signal.aborted) setResult({ query, loading: false, error: '', data }); })
+      .catch(error => { if (!controller.signal.aborted) setResult({ query, loading: false, error: error.message, data: null }); });
+    return () => controller.abort();
+  }, [query, revision]);
+  function updateFilter(key, value) {
+    const next = new URLSearchParams(params); next.delete('page');
+    if (value) next.set(key, value); else next.delete(key);
+    setParams(next);
   }
-
-  return (
-    <>
-      <h1>Rechercher un médecin</h1>
-      <p className="page-intro">
-        Trouvez un professionnel adapté à votre besoin.
-      </p>
-
-      <SearchBar value={name} onChange={setName} />
-
-      <div className="filter-row">
-        <label htmlFor="specialty-filter" className="sr-only">
-          Filtrer par spécialité
-        </label>
-        <select
-          id="specialty-filter"
-          className="filter-select"
-          value={specialty}
-          onChange={(event) => setSpecialty(event.target.value)}
-        >
-          <option value="">Toutes les spécialités</option>
-          {specialties.map((s) => (
-            <option key={s.slug} value={s.slug}>
-              {s.label}
-            </option>
-          ))}
+  function submit(event) {
+    event.preventDefault();
+    const next = new URLSearchParams(params); next.delete('page');
+    for (const [key, value] of [['q', name.trim()], ['city', city.trim()]]) {
+      if (value) next.set(key, value); else next.delete(key);
+    }
+    setParams(next);
+  }
+  const current = result.query === query ? result : { loading: true, data: null, error: '' };
+  return <><h1>Rechercher un médecin</h1><p className="page-intro">Trouvez un professionnel adapté à votre besoin.</p>
+    <form onSubmit={submit}><SearchBar value={name} onChange={setName} />
+      <div className="filter-row"><label htmlFor="specialty-filter" className="sr-only">Filtrer par spécialité</label>
+        <select id="specialty-filter" className="filter-select" value={specialtyId} onChange={event => updateFilter('specialtyId', event.target.value)}>
+          <option value="">Toutes les spécialités</option>{specialties.data?.specialties.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
         </select>
-      </div>
-
-      <section className="results" aria-live="polite">
-        {loading && <LoadingState label="Recherche des médecins…" />}
-
-        {!loading && error && (
-          <ErrorState message={error} onRetry={retry} />
-        )}
-
-        {!loading && !error && doctors.length === 0 && (
-          <EmptyState
-            title="Aucun médecin trouvé"
-            description="Essayez avec un autre nom ou une autre spécialité."
-          />
-        )}
-
-        {!loading && !error && doctors.length > 0 && (
-          <>
-            <p className="results-count">
-              {doctors.length} médecin{doctors.length > 1 ? 's' : ''} trouvé
-              {doctors.length > 1 ? 's' : ''}
-            </p>
-            <ul className="doctor-list">
-              {doctors.map((doctor) => (
-                <li key={doctor.id}>
-                  <DoctorCard doctor={doctor} />
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </section>
-    </>
-  );
+      </div><div className="form-field"><label htmlFor="city-filter">Ville</label><input id="city-filter" value={city} maxLength={100} onChange={event => setCity(event.target.value)} /></div><AuthButton type="submit">Rechercher</AuthButton>
+    </form>
+    {specialties.error && <ErrorState message={specialties.error} onRetry={specialties.reload} />}
+    <section className="results" aria-live="polite">{current.loading && <LoadingState label="Recherche des médecins…" />}
+      {current.error && <ErrorState message={current.error} onRetry={() => setRevision(value => value + 1)} />}
+      {current.data && <><p className="results-count">{current.data.pagination.total} médecin(s) trouvé(s)</p>
+        {!current.data.doctors.length && <EmptyState title="Aucun médecin trouvé" description="Essayez un autre nom, une autre ville ou une autre spécialité." />}
+        <ul className="doctor-list">{current.data.doctors.map(doctor => <li key={doctor.id}><DoctorCard doctor={doctor} /></li>)}</ul>
+        <Pagination pagination={current.data.pagination} onPage={value => { const next = new URLSearchParams(params); next.set('page', value); setParams(next); }} />
+      </>}
+    </section>
+  </>;
 }

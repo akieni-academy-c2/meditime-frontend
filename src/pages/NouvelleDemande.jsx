@@ -1,271 +1,57 @@
-// src/pages/NouvelleDemande.jsx
-// Formulaire de demande de rendez-vous (issue #9).
+import { useState } from 'react';
+import { useNavigate, useParams, useSearchParams, Link } from 'react-router-dom';
+import { Calendar, Clock, MapPin, Stethoscope } from 'lucide-react';
+import { PageHeader } from '../components/PageHeader.jsx';
+import { AuthButton, AuthNotice } from '../components/AuthUI.jsx';
+import { LoadingState, ErrorState } from '../components/States.jsx';
+import PersonAvatar from '../components/PersonAvatar.jsx';
+import { useAuth } from '../auth/AuthContext.jsx';
+import { useResource } from '../lib/useResource.js';
+import { createAppointment } from '../lib/appointments.js';
+import { doctorForView } from '../lib/doctors.js';
+import { dateInZone, formatDate, formatTime, personName } from '../lib/dates.js';
 
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams, Link } from 'react-router-dom';
-import { Calendar, Clock, MapPin, UserRound, Stethoscope, ArrowLeft } from 'lucide-react';
-import { PageHeader } from '@/components/PageHeader.jsx';
-import { AuthButton, AuthNotice } from '@/components/AuthUI.jsx';
-import { getDoctorById } from '@/lib/doctors.js';
-import { createAppointment } from '@/lib/appointments.js';
-
-function formatDateLong(isoDate) {
-  return new Date(isoDate).toLocaleDateString('fr-FR', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-  });
-}
-
-function formatTime(isoDate) {
-  return new Date(isoDate).toLocaleTimeString('fr-FR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-}
-
-export default function NouvelleDemande() {
-  const { id: doctorId } = useParams();
-  const location = useLocation();
+function RequestForm({ doctor, slotId, date }) {
+  const { account, notifyDataChanged } = useAuth();
   const navigate = useNavigate();
-
-  // Le créneau est transmis via l'état de navigation
-  const slot = location.state?.slot || null;
-
-  const [doctor, setDoctor] = useState(null);
-  const [loadingDoctor, setLoadingDoctor] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
+  const [reason, setReason] = useState('');
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
-
-  const [form, setForm] = useState({
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-    motif: '',
-  });
-
-  // Charger le médecin
-  useEffect(() => {
-    let cancelled = false;
-    if (!doctorId) return;
-    setLoadingDoctor(true);
-    getDoctorById(doctorId)
-      .then((data) => {
-        if (!cancelled) setDoctor(data);
-      })
-      .catch(() => {
-        if (!cancelled) setError('Impossible de charger le médecin.');
-      })
-      .finally(() => {
-        if (!cancelled) setLoadingDoctor(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, [doctorId]);
-
-  // Si pas de créneau sélectionné → retour
-  if (!slot) {
-    return (
-      <>
-        <PageHeader />
-        <section className="form-section">
-          <AuthNotice error>
-            Aucun créneau sélectionné. Revenez à la fiche du médecin.
-          </AuthNotice>
-          <Link to={`/medecins/${doctorId}`} className="back-link">
-            <ArrowLeft size={16} aria-hidden="true" />
-            Retour à la fiche du médecin
-          </Link>
-        </section>
-      </>
-    );
-  }
-
-  function updateField(field, value) {
-    setForm((prev) => ({ ...prev, [field]: value }));
-  }
-
-  function validate() {
-    if (!form.firstName.trim()) return 'Le prénom est obligatoire.';
-    if (!form.lastName.trim()) return 'Le nom est obligatoire.';
-    if (!form.phone.trim()) return 'Le téléphone est obligatoire.';
-    const cleanedPhone = form.phone.replace(/\s/g, '');
-    if (!/^[0-9+\-() ]{8,}$/.test(cleanedPhone)) {
-      return 'Numéro de téléphone invalide.';
-    }
-    if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
-      return 'Adresse email invalide.';
-    }
-    return null;
-  }
-
-  async function handleSubmit(event) {
+  const slots = useResource('/doctors/' + doctor.id + '/slots?' + new URLSearchParams({ from: date || dateInZone(new Date(), doctor.timezone), to: date || dateInZone(new Date(), doctor.timezone) }));
+  const slot = slots.data?.slots.find(item => item.id === slotId && item.status === 'available');
+  async function send(event) {
     event.preventDefault();
-    setError('');
-
-    const validationError = validate();
-    if (validationError) {
-      setError(validationError);
-      return;
-    }
-
-    setSubmitting(true);
+    if (!slot || busy) return;
+    setBusy(true); setError('');
     try {
-      const appointment = await createAppointment({
-        doctorId,
-        doctorName: doctor ? `Dr ${doctor.firstName} ${doctor.lastName}` : 'Médecin',
-        doctorSpecialty: doctor?.specialtyLabel || '',
-        startAt: slot.startAt,
-        endAt: slot.endAt,
-        duration: slot.duration || doctor?.consultationDuration || 30,
-        address: doctor?.address || '',
-        city: doctor?.city || '',
-        patient: {
-          firstName: form.firstName.trim(),
-          lastName: form.lastName.trim(),
-          phone: form.phone.trim(),
-          email: form.email.trim(),
-        },
-        motif: form.motif.trim(),
-      });
-
-      // Redirection vers la page de confirmation
-      navigate(`/rendez-vous/confirmation/${appointment.code}`, {
-        state: { appointment },
-        replace: true,
-      });
+      const appointment = await createAppointment({ slotId: slot.id, reason });
+      notifyDataChanged();
+      navigate('/rendez-vous/confirmation/' + appointment.id, { replace: true });
     } catch (err) {
-      setError(err?.message || "L'envoi a échoué. Réessayez.");
-    } finally {
-      setSubmitting(false);
-    }
+      setError(err.message);
+      if (err.status === 409) { slots.reload(); notifyDataChanged(); }
+    } finally { setBusy(false); }
   }
-
-  return (
-    <>
-      <PageHeader />
-
-      <section className="form-section">
-        <h1 className="form-title">Demander un rendez-vous</h1>
-
-        {/* Récap du médecin */}
-        {loadingDoctor && <p className="form-hint">Chargement…</p>}
-        {!loadingDoctor && doctor && (
-          <div className="form-doctor-card">
-            <div className="form-doctor-avatar" aria-hidden="true">
-              {doctor.photoUrl ? (
-                <img src={doctor.photoUrl} alt="" />
-              ) : (
-                <UserRound size={28} />
-              )}
-            </div>
-            <div>
-              <p className="form-doctor-name">
-                Dr {doctor.firstName} {doctor.lastName}
-              </p>
-              <p className="form-doctor-specialty">
-                <Stethoscope size={13} aria-hidden="true" />
-                {doctor.specialtyLabel}
-              </p>
-            </div>
-          </div>
-        )}
-
-        {/* Récap du créneau */}
-        <div className="form-slot-card">
-          <p className="form-slot-line">
-            <Calendar size={15} aria-hidden="true" />
-            {formatDateLong(slot.startAt)}
-          </p>
-          <p className="form-slot-line">
-            <Clock size={15} aria-hidden="true" />
-            {formatTime(slot.startAt)} — {formatTime(slot.endAt)}
-          </p>
-          {doctor && (
-            <p className="form-slot-line">
-              <MapPin size={15} aria-hidden="true" />
-              {doctor.address}, {doctor.city}
-            </p>
-          )}
-        </div>
-
-        {/* Formulaire */}
-        <form className="form-fields" onSubmit={handleSubmit} noValidate>
-          <div className="form-field">
-            <label htmlFor="firstName">Prénom *</label>
-            <input
-              id="firstName"
-              type="text"
-              value={form.firstName}
-              onChange={(e) => updateField('firstName', e.target.value)}
-              required
-              autoComplete="given-name"
-            />
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="lastName">Nom *</label>
-            <input
-              id="lastName"
-              type="text"
-              value={form.lastName}
-              onChange={(e) => updateField('lastName', e.target.value)}
-              required
-              autoComplete="family-name"
-            />
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="phone">Téléphone *</label>
-            <input
-              id="phone"
-              type="tel"
-              value={form.phone}
-              onChange={(e) => updateField('phone', e.target.value)}
-              required
-              autoComplete="tel"
-              placeholder="06 12 34 56 78"
-            />
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="email">Email (facultatif)</label>
-            <input
-              id="email"
-              type="email"
-              value={form.email}
-              onChange={(e) => updateField('email', e.target.value)}
-              autoComplete="email"
-              placeholder="vous@email.com"
-            />
-          </div>
-
-          <div className="form-field">
-            <label htmlFor="motif">Motif (facultatif)</label>
-            <textarea
-              id="motif"
-              rows={3}
-              value={form.motif}
-              onChange={(e) => updateField('motif', e.target.value)}
-              placeholder="Ex : bilan de santé, renouvellement d'ordonnance…"
-            />
-          </div>
-
-          {error && <AuthNotice error>{error}</AuthNotice>}
-
-          <AuthButton type="submit" disabled={submitting}>
-            {submitting ? 'Envoi en cours…' : 'Demander le rendez-vous'}
-          </AuthButton>
-
-          <p className="form-hint">
-            ⚠️ Votre demande sera **en attente** — elle ne sera confirmée qu'après
-            décision du médecin.
-          </p>
-        </form>
-      </section>
-    </>
-  );
+  return <section className="form-section"><h1 className="form-title">Demander un rendez-vous</h1>
+    <div className="form-doctor-card"><div className="form-doctor-avatar"><PersonAvatar name={personName(doctor)} avatarUrl={doctor.photoUrl} /></div><div><p className="form-doctor-name">Dr {personName(doctor)}</p><p className="form-doctor-specialty"><Stethoscope size={13} />{doctor.specialtyLabel}</p></div></div>
+    {slots.loading && <LoadingState label="Vérification du créneau…" />}{slots.error && <ErrorState message={slots.error} onRetry={slots.reload} />}
+    {!slots.loading && slots.data && !slot && <AuthNotice error>Ce créneau n’est plus disponible. Sélectionnez-en un autre sur la fiche du médecin.</AuthNotice>}
+    <Link className="back-link" to={'/medecins/' + doctor.id}>Changer de créneau</Link>
+    {slot && <div className="form-slot-card"><p className="form-slot-line"><Calendar size={15} />{formatDate(slot.startsAt, doctor.timezone)}</p><p className="form-slot-line"><Clock size={15} />{formatTime(slot.startsAt, doctor.timezone)} — {formatTime(slot.endsAt, doctor.timezone)}</p><p className="form-slot-line"><MapPin size={15} />{[doctor.address, doctor.city].filter(Boolean).join(', ')}</p></div>}
+    <section className="request-info"><div className="section-heading"><h2>Vos informations</h2><Link to="/profil/informations">Modifier</Link></div><p>{personName(account.user)}</p>{account.user.phone && <p>{account.user.phone}</p>}<p>{account.user.email}</p></section>
+    <form className="form-fields" onSubmit={send}><div className="form-field"><label htmlFor="motif">Motif (facultatif)</label><textarea id="motif" rows={3} maxLength={1000} value={reason} onChange={event => setReason(event.target.value)} placeholder="Ex. : bilan de santé, renouvellement d’ordonnance…" /><p className="field-hint">{reason.length} / 1000 caractères</p></div>{error && <AuthNotice error>{error}</AuthNotice>}
+      <AuthButton type="submit" disabled={busy || slots.loading || Boolean(slots.error) || !slot}>{busy ? 'Envoi en cours…' : 'Demander le rendez-vous'}</AuthButton>
+      <p className="form-hint">Votre demande reste en attente jusqu’à la décision du médecin.</p>
+    </form>
+  </section>;
+}
+export default function NouvelleDemande() {
+  const { id } = useParams();
+  const [params] = useSearchParams();
+  const doctor = useResource('/doctors/' + id);
+  const date = params.get('date');
+  const validDate = date && /^\d{4}-\d{2}-\d{2}$/.test(date);
+  return <><PageHeader />{doctor.loading && <LoadingState />}{doctor.error && <ErrorState message={doctor.error} onRetry={doctor.reload} />}
+    {doctor.data?.doctor && (params.get('slot') && validDate ? <RequestForm key={id + params.toString()} doctor={doctorForView(doctor.data.doctor)} slotId={params.get('slot')} date={date} /> : <section className="form-section"><AuthNotice error>Aucun créneau sélectionné.</AuthNotice><Link to={'/medecins/' + id}>Retour à la fiche du médecin</Link></section>)}
+  </>;
 }
