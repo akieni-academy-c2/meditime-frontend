@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Search, SlidersHorizontal } from 'lucide-react';
+import { SlidersHorizontal } from 'lucide-react';
 import { PageHeader } from '../components/NavigationUI.jsx';
 import BottomSheet from '../components/BottomSheet.jsx';
 import { SearchBar } from '../components/SearchBar.jsx';
@@ -10,6 +10,7 @@ import Pagination from '../components/Pagination.jsx';
 import { AuthButton } from '../components/AuthUI.jsx';
 import { useResource } from '../lib/useResource.js';
 import { getDoctorCities, searchDoctors } from '../lib/doctors.js';
+import { SelectField } from '../components/FormsUI.jsx';
 import { Switch } from '../components/ui/switch.jsx';
 
 export default function Recherche() {
@@ -78,16 +79,16 @@ export default function Recherche() {
     setParams(next); setFiltersOpen(false);
   }
   const current = result.query === query ? result : { loading: true, data: null, error: '' };
-  return <><PageHeader title="Résultats" onBack={() => navigate('/accueil')} action={<button type="button" aria-label="Filtres de recherche" onClick={openFilters}><SlidersHorizontal size={20} /></button>} />
-    <form className="search-query" onSubmit={submit}><SearchBar value={name} onChange={setName} placeholder="Modifier ma recherche" /><button type="submit" aria-label="Rechercher"><Search size={19} /></button></form>
+  return <><PageHeader title="Résultats" fallback="/accueil" action={<button type="button" aria-label="Filtres de recherche" onClick={openFilters}><SlidersHorizontal size={20} /></button>} />
+    <form className="search-query" onSubmit={submit}><SearchBar value={name} onChange={setName} placeholder="Modifier ma recherche" /></form>
     <div className="search-filters"><button type="button" onClick={openFilters}>{params.get('city') || 'Ville'}</button><button type="button" aria-pressed={Boolean(availableBefore)} onClick={() => updateFilter('availableBefore', availableBefore ? '' : new Date(Date.now() + 7 * 86400000).toISOString())}>Disponible sous 7 jours</button>
       <div className="filter-row"><label htmlFor="specialty-filter" className="sr-only">Filtrer par spécialité</label>
-        <select id="specialty-filter" className="filter-select" value={specialtyId} onChange={event => updateFilter('specialtyId', event.target.value)}>
+        <select id="specialty-filter" className="filter-select" style={{ width: `${(specialties.data?.specialties.find(item => item.id === specialtyId)?.name || 'Spécialité').length + 5}ch` }} value={specialtyId} onChange={event => updateFilter('specialtyId', event.target.value)}>
           <option value="">Spécialité</option>{specialties.data?.specialties.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
         </select>
       </div></div>
     <BottomSheet className="business-sheet search-filter-sheet" open={filtersOpen} onOpenChange={setFiltersOpen} title="Filtres de recherche" footer={<AuthButton type="submit" form="city-search-form">Afficher les résultats</AuthButton>}><form id="city-search-form" onSubmit={applyFilters}>
-      <div className="form-field"><label htmlFor="city-filter">Ville</label><input id="city-filter" list="doctor-cities" autoComplete="off" value={city} maxLength={100} placeholder="Toutes les villes" onChange={event => setCity(event.target.value)} /><datalist id="doctor-cities">{cities.map(value => <option key={value} value={value} />)}</datalist>{citiesLoading && <p className="field-hint">Chargement des villes…</p>}{citiesError && <p role="alert" className="field-hint">{citiesError}</p>}</div>
+      <SelectField label="Ville" value={city || 'all'} onValueChange={value => setCity(value === 'all' ? '' : value)} disabled={citiesLoading} options={[{ value: 'all', label: 'Toutes les villes' }, ...[...new Set([...cities, ...(city ? [city] : [])])].map(value => ({ value, label: value }))]} />{citiesLoading && <LoadingState layout="form" />}{citiesError && <p role="alert" className="field-hint">{citiesError}</p>}
       <div className="form-field"><label htmlFor="sheet-specialty">Spécialité</label><select id="sheet-specialty" className="filter-select" value={draftSpecialty} onChange={event => setDraftSpecialty(event.target.value)}><option value="">Toutes les spécialités</option>{specialties.data?.specialties.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div>
       <label className="filter-switch" htmlFor="sheet-available">Disponible sous 7 jours<Switch id="sheet-available" checked={draftAvailable} onCheckedChange={setDraftAvailable} /></label>
       <button type="button" className="text-action" onClick={() => { setCity(''); setDraftSpecialty(''); setDraftAvailable(false); }}>Réinitialiser les filtres</button>

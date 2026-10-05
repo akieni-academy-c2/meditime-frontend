@@ -39,5 +39,5 @@ export default function RequestAppointment() {
   const { id } = useParams();
   const navigate = useNavigate();
   const doctor = useResource(`/doctors/${id}`);
-  return <><PageHeader title="Demander un rendez-vous" onBack={() => navigate(`/medecins/${id}`)} /><ResourceState resource={doctor} />{doctor.data?.doctor && <RequestForm key={id} doctor={doctor.data.doctor} />}</>;
+  return <><PageHeader title="Demander un rendez-vous" fallback={'/medecins/'+id} /><ResourceState resource={doctor} />{doctor.data?.doctor && <RequestForm key={id} doctor={doctor.data.doctor} />}</>;
 }

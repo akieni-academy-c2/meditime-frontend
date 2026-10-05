@@ -1,16 +1,12 @@
 // src/components/States.jsx
 // États d'interface partagés : chargement, aucun résultat, erreur.
 
-import { AlertCircle, LoaderCircle, SearchX } from 'lucide-react';
+import { AlertCircle, SearchX } from 'lucide-react';
+import LoadingSkeleton from './LoadingSkeleton.jsx';
 import { AuthButton } from './AuthUI.jsx';
 
-export function LoadingState({ label = 'Chargement…' }) {
-  return (
-    <div className="state-block" role="status">
-      <LoaderCircle className="spin" size={26} aria-hidden="true" />
-      <p>{label}</p>
-    </div>
-  );
+export function LoadingState({ label = 'Chargement', layout }) {
+  return <LoadingSkeleton label={label} layout={layout} />;
 }
 
 export function EmptyState({

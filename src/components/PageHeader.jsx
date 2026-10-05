@@ -2,17 +2,17 @@
 // Header des pages internes : bouton retour + titre centré.
 
 import { ArrowLeft, Heart, Share2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useBack } from '../lib/useBack.js';
 
-export function PageHeader({ title, showActions = false }) {
-  const navigate = useNavigate();
+export function PageHeader({ title, showActions = false, fallback }) {
+  const back = useBack(fallback);
 
   return (
     <header className="page-header has-back">
       <button
         type="button"
         className="page-header-back"
-        onClick={() => navigate(-1)}
+        onClick={back}
         aria-label="Retour"
       >
         <ArrowLeft size={22} aria-hidden="true" />

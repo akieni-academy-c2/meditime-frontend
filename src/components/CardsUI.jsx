@@ -1,4 +1,5 @@
-import { ChevronRight, LoaderCircle } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
+import LoadingSkeleton from './LoadingSkeleton.jsx';
 import PersonAvatar from './PersonAvatar.jsx';
 import { StatusBadge } from './SchedulingUI.jsx';
 
@@ -15,6 +16,6 @@ export function EmptyState({ title, description, children }) {
   return <div className="page-placeholder"><h3>{title}</h3><p>{description}</p>{children}</div>;
 }
 
-export function LoadingState({ children = 'Chargement…' }) {
-  return <p className="loading-state" role="status"><LoaderCircle className="spin" size={20} aria-hidden="true" />{children}</p>;
+export function LoadingState({ layout }) {
+  return <LoadingSkeleton layout={layout} />;
 }

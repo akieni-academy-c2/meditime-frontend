@@ -24,7 +24,7 @@ export default function AppShell() {
   const showBrand = ['/accueil', '/profil'].includes(location.pathname);
   return <div className={`app-shell business-shell ${showBrand ? 'with-brand' : 'internal-page'}`}>
     {showBrand && <AppHeader user={account.user} />}
-    <main className="app-content" id="main-content"><Outlet context={{ dashboard }} /></main>
+    <main className="app-content" id="main-content"><div className="page-content" key={location.pathname}><Outlet context={{ dashboard }} /></div></main>
     <TabBar selectedTo={location.pathname === '/recherche' ? '/accueil' : mode === 'patient' && location.pathname.startsWith('/medecins/') ? '/rendez-vous' : undefined} items={mode === 'doctor' ? [{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/planning', label: 'Planning', icon: CalendarDays }, { to: '/demandes', label: 'Demandes', icon: ClipboardList, count: dashboard.data?.counts.pending }, { to: '/profil', label: 'Profil', icon: UserRound }] : [{ to: '/accueil', label: 'Accueil', icon: House }, { to: '/rendez-vous', label: 'Rendez-vous', icon: CalendarDays }, { to: '/profil', label: 'Profil', icon: UserRound }]} />
   </div>;
 }

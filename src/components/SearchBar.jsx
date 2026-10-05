@@ -9,6 +9,7 @@ export function SearchBar({ value, onChange, placeholder = 'Médecin, spécialit
       <Search size={20} aria-hidden="true" />
       <input
         type="search"
+        enterKeyHint="search"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}

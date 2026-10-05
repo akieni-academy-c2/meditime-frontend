@@ -26,7 +26,7 @@ function DoctorContent({ doctor }) {
     </section>
     <section className="doctor-section"><h2 className="doctor-section-title">Choisir une date</h2><DateStrip selectedDate={date} onChange={value => { setDate(value); setSlot(null); }} timezone={doctor.timezone} /><p className="field-hint">Heures du cabinet : {doctor.timezone}</p></section>
     <section className="doctor-section"><h2 className="doctor-section-title">Créneaux disponibles</h2>
-      {resource.loading && <LoadingState label="Chargement des créneaux…" />}
+      {resource.loading && <LoadingState layout="slots" />}
       {resource.error && <ErrorState message={resource.error} onRetry={resource.reload} />}
       {!resource.loading && resource.data && <SlotPicker slots={resource.data.slots} selectedDate={date} selectedSlot={selected} onSelect={setSlot} timezone={resource.data.timezone} />}
     </section>
@@ -36,5 +36,5 @@ function DoctorContent({ doctor }) {
 export default function MedecinDetail() {
   const { id } = useParams();
   const resource = useResource('/doctors/' + id);
-  return <><PageHeader />{resource.loading && <LoadingState label="Chargement du profil…" />}{resource.error && <ErrorState message={resource.error} onRetry={resource.reload} />}{resource.data?.doctor && <DoctorContent key={id} doctor={doctorForView(resource.data.doctor)} />}</>;
+  return <><PageHeader />{resource.loading && <LoadingState layout="profile" />}{resource.error && <ErrorState message={resource.error} onRetry={resource.reload} />}{resource.data?.doctor && <DoctorContent key={id} doctor={doctorForView(resource.data.doctor)} />}</>;
 }

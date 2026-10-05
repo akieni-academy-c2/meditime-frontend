@@ -30,5 +30,5 @@ function DoctorFields({ profile }) {
 export default function DoctorProfile() {
   const navigate = useNavigate();
   const profile = useResource('/me/doctor-profile');
-  return <><PageHeader title="Informations médecin" onBack={() => navigate('/profil')} /><ResourceState resource={profile} />{profile.data?.doctorProfile && <DoctorFields profile={profile.data.doctorProfile} />}</>;
+  return <><PageHeader title="Informations médecin" fallback="/profil" /><ResourceState resource={profile} />{profile.data?.doctorProfile && <DoctorFields profile={profile.data.doctorProfile} />}</>;
 }

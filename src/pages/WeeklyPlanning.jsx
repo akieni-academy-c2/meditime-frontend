@@ -54,5 +54,5 @@ function WeeklyForm({ availability }) {
 export default function WeeklyPlanning() {
   const navigate = useNavigate();
   const resource = useResource('/me/doctor/availability');
-  return <><PageHeader title="Configurer mon planning" onBack={() => navigate('/planning')} /><ResourceState resource={resource} />{resource.data && <WeeklyForm availability={resource.data} />}</>;
+  return <><PageHeader title="Configurer mon planning" fallback="/planning" /><ResourceState resource={resource} />{resource.data && <WeeklyForm availability={resource.data} />}</>;
 }
