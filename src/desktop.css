@@ -12,13 +12,15 @@
 .gateway-continue:hover { background: #5720e8; box-shadow: 0 8px 20px rgb(71 26 184 / 16%); }
 .gateway-continue:active { transform: scale(.96); }
 .gateway-continue:focus-visible, .gateway-close:focus-visible { outline: 3px solid #a78bfa; outline-offset: 4px; }
-.gateway-phone { position: relative; width: min(100%, 560px, calc((100dvh - 120px) * 2 / 3)); aspect-ratio: 2 / 3; justify-self: end; }
+.gateway-phone { position: relative; width: min(100%, 560px, calc((100dvh - 110px) * .85)); height: min(100%, calc(100dvh - 110px)); overflow: hidden; justify-self: center; }
+.gateway-phone-art { position: relative; width: 100%; aspect-ratio: 2 / 3; transform: translateY(-6%); }
 .gateway-hand { width: 100%; height: 100%; display: block; }
 .gateway-phone-screen { position: absolute; left: 20%; top: 7.9%; width: 51.2%; height: 74.9%; border-radius: 11% / 5%; background: white; overflow: hidden; container-type: inline-size; color: var(--foreground); }
 .preview-island { position: absolute; width: 28%; height: 3.2%; border-radius: 999px; background: #090909; left: 36%; top: 1.1%; z-index: 2; }
 .preview-body { padding: 16cqw 4.5cqw 0; height: 100%; overflow: hidden; }
 .preview-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7cqw; }
 .preview-header .brand { gap: 2cqw; font-size: 6.2cqw; }
+.preview-header .brand > span { font-size: inherit; }
 .preview-header .brand img { width: 11cqw; height: auto; }
 .preview-avatar { width: 12cqw; height: 12cqw; border-radius: 50%; display: grid; place-items: center; background: var(--secondary); color: var(--primary); font-size: 4cqw; font-weight: 600; }
 .preview-body h2 { margin: 0 0 2cqw; font-size: 6.4cqw; font-weight: 600; letter-spacing: -.03em; }
@@ -68,5 +70,5 @@
   .gateway-local-note { margin-top: 12px; padding-top: 12px; font-size: 11px; }
 }
 /* Keep content reachable in unusually short windows or with enlarged text. */
-@media (max-height: 520px) { .desktop-gateway { height: auto; min-height: 100dvh; } .gateway-hero { padding: 16px 0; } .gateway-phone { width: min(100%, 300px); } }
+@media (max-height: 520px) { .desktop-gateway { height: auto; min-height: 100dvh; } .gateway-hero { padding: 16px 0; } .gateway-phone { width: min(100%, 300px); height: 400px; } }
 @media (prefers-reduced-motion: reduce) { .gateway-continue, .gateway-close { transition: none; } .gateway-overlay[data-slot='dialog-overlay'], .gateway-qr-dialog { animation: none; } }
