@@ -36,7 +36,7 @@ export default function App() {
   }, []);
   if (import.meta.env.DEV && location.pathname === '/ui-kit') return <UIKit />;
   if (!mobile) return <main className="device-message"><Brand /><div className="device-icon"><Smartphone size={40} /></div>
-    <h1>MediTime vous accompagne sur mobile</h1><p>L’application est actuellement disponible sur mobile uniquement. Ouvrez cette adresse sur votre téléphone pour continuer.</p>
+    <h1>MediTime vous accompagne sur mobile et tablette</h1><p>Ouvrez cette adresse sur votre téléphone ou votre tablette pour continuer.</p>
   </main>;
   return <div className="mobile-app"><AuthProvider><ModeProvider><Routes>
     <Route path="/connexion" element={<main><Login /></main>} />
