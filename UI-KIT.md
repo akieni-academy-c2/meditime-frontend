@@ -37,7 +37,8 @@ import { AppHeader, PageHeader, TabBar, StepIndicator } from '@/components/Navig
 - `AgendaList` : `entries=[{id,time,title,description,available}]`, `onSelect`.
 - `FilterChips` : `options=[{value,label}]`, `value`, `onChange`, `label`.
 - `TabBar` : `items=[{to,label,icon,count}]`, 3 entrées patient ou 4 médecin. À placer dans le layout connecté, jamais dans le login.
-- `BottomSheet` : `open`, `onOpenChange`, `title`, `description`, `children`, `footer`. Largeur mobile, contenu défilable, fermeture Échap, focus capturé puis restauré.
+- `BottomSheet` : `open`, `onOpenChange`, `title`, `description`, `children`, `footer`, `headerMedia` et `className` facultatifs. Largeur mobile, contenu défilable, fermeture Échap, focus capturé puis restauré.
+- `InstallSheet` (`pwa/InstallSheet.jsx`) : `open`, `onOpenChange`, `canInstall`, `onInstall`. Présentation seule ; `InstallAfterLogin` contrôle la proposition après authentification et `InstallProvider` gère l’invite native. L’aperçu du catalogue affiche les instructions manuelles.
 
 ```jsx
 <BottomSheet open={open} onOpenChange={setOpen}

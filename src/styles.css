@@ -1130,6 +1130,16 @@ h1, h2 { text-wrap: balance; }
 .filter-chips button { white-space: nowrap; border: 1px solid var(--border); border-radius: 24px; padding: 10px 16px; min-height: 44px; font-size: .85rem; }
 .filter-chips [aria-pressed='true'] { background: #eee7ff; color: var(--primary); border-color: #b99bff; }
 
+/* Installation: shared sheet with the app's white mobile surface. */
+.install-intro { text-align: center; padding: 4px 8px 12px; }
+.install-intro h3 { font-size: 21px; font-weight: 650; margin: 0 0 12px; }
+.install-intro p { color: #77758d; font-size: 15px; line-height: 1.6; margin: 0; }
+.install-later { width: 100%; color: #77758d; padding: 12px; font-size: 14px; }
+.install-instructions { background: #f6f5fb; border-radius: 16px; padding: 18px; font-size: 14px; line-height: 1.6; }
+.install-instructions ol { padding-left: 20px; margin: 10px 0; }
+.install-instructions p { color: #77758d; margin: 0; }
+.install-sheet > header { text-align: center; }
+.install-logo { display: block; margin: 8px auto 18px; border-radius: 24px; box-shadow: 0 4px 20px #100d3e0d; }
 .person-avatar [data-slot="avatar-fallback"] { background: var(--secondary); color: var(--primary); font-weight: 650; font-size: 17px; }
 .header-avatar { width: 44px; height: 44px; }
 .header-avatar [data-slot="avatar-fallback"] { font-size: 14px; }

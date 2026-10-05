@@ -23,7 +23,7 @@ import UIKit from './pages/UIKit.jsx';
 import { Brand } from './components/Brand.jsx';
 import AppShell from './components/AppShell.jsx';
 import Home from './pages/Home.jsx';
-
+import InstallAfterLogin from './pwa/InstallAfterLogin.jsx';
 
 export default function App() {
   const location = useLocation();
@@ -63,5 +63,5 @@ export default function App() {
       <Route path="/medecins/:id/demande" element={<NouvelleDemande />} />
     </Route>
     <Route path="*" element={<Navigate to="/connexion" replace />} />
-  </Routes></ModeProvider></AuthProvider></div>;
+  </Routes><InstallAfterLogin /></ModeProvider></AuthProvider></div>;
 }
