@@ -1,48 +1,18 @@
-// src/components/DoctorCard.jsx
-// Carte d'un médecin dans une liste (recherche, home, etc.)
-
 import { Link } from 'react-router-dom';
-import { MapPin, Stethoscope, UserRound } from 'lucide-react';
-
-function formatNextAvailability(isoDate) {
-  if (!isoDate) return null;
-  const date = new Date(isoDate);
-  const now = new Date();
-  const isToday = date.toDateString() === now.toDateString();
-  const time = date.toLocaleTimeString('fr-FR', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
-  return isToday ? `Disponible aujourd'hui à ${time}` : `Prochaine dispo : ${time}`;
+import { ChevronRight, MapPin } from 'lucide-react';
+import PersonAvatar from './PersonAvatar.jsx';
+import { doctorForView } from '../lib/doctors.js';
+import { formatCompactDate, formatTime } from '../lib/dates.js';
+export function DoctorCard({ doctor, onClick }) {
+  const view = doctorForView(doctor);
+  const next = view.nextAvailableAt;
+  const contents = <><div className="doctor-card-avatar"><PersonAvatar name={[view.firstName, view.lastName].filter(Boolean).join(' ')} avatarUrl={view.photoUrl} /></div>
+    <div className="doctor-card-body"><p className="doctor-card-name">Dr {view.firstName} {view.lastName}</p>
+      <p className="doctor-card-specialty">{view.specialtyLabel}</p>
+      {view.city && <p className="doctor-card-city"><MapPin size={13} aria-hidden="true" />{view.city}</p>}
+      {next && <p className="doctor-card-availability">Prochaine dispo : {formatCompactDate(next, view.timezone)} à {formatTime(next, view.timezone)}</p>}
+    </div><ChevronRight className="doctor-card-chevron" size={18} aria-hidden="true" /></>;
+  if (onClick) return <button type="button" className="doctor-card" onClick={onClick}>{contents}</button>;
+  return <Link to={'/medecins/' + view.id} className="doctor-card">{contents}</Link>;
 }
-
-export function DoctorCard({ doctor }) {
-  const nextLabel = formatNextAvailability(doctor.nextAvailableAt);
-
-  return (
-    <Link to={`/medecins/${doctor.id}`} className="doctor-card">
-      <div className="doctor-card-avatar" aria-hidden="true">
-        {doctor.photoUrl ? (
-          <img src={doctor.photoUrl} alt="" />
-        ) : (
-          <UserRound size={28} />
-        )}
-      </div>
-
-      <div className="doctor-card-body">
-        <p className="doctor-card-name">
-          Dr {doctor.firstName} {doctor.lastName}
-        </p>
-        <p className="doctor-card-specialty">
-          <Stethoscope size={14} aria-hidden="true" />
-          {doctor.specialtyLabel}
-        </p>
-        <p className="doctor-card-city">
-          <MapPin size={14} aria-hidden="true" />
-          {doctor.city}
-        </p>
-        {nextLabel && <p className="doctor-card-availability">{nextLabel}</p>}
-      </div>
-    </Link>
-  );
-}
+export default DoctorCard;

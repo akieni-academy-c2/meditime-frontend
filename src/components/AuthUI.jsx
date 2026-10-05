@@ -1,4 +1,5 @@
-import { AlertCircle, LoaderCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
+import LoadingSkeleton from './LoadingSkeleton.jsx';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,5 +31,5 @@ export function AuthNotice({ children, error = false }) {
 }
 
 export function AuthLoading() {
-  return <div className="auth-loading" role="status"><LoaderCircle className="spin" size={24} /><p>Retrouvons votre session…</p></div>;
+  return <LoadingSkeleton layout="screen" label="Chargement de la session" />;
 }
