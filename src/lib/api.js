@@ -1,4 +1,8 @@
-const baseUrl = (import.meta.env.VITE_API_URL || 'https://meditime-backend-is6p.onrender.com/api/v1').replace(/\/$/, '');
+// Production sessions must stay on the site's origin, including preview builds.
+// Keep an explicit local API address for development (for example Gmail SMTP).
+const baseUrl = import.meta.env.PROD
+  ? '/api/v1'
+  : (import.meta.env.VITE_API_URL || 'http://localhost:3001/api/v1').replace(/\/$/, '');
 let csrfToken = null;
 let sessionExpired = () => {};
 
@@ -20,7 +24,7 @@ export async function api(path, { method = 'GET', body, signal } = {}) {
   let response;
   try {
     response = await fetch(`${baseUrl}${path}`, {
-      method, credentials: 'include',
+      method, credentials: 'include', cache: 'no-store',
       signal: signal ? AbortSignal.any([signal, AbortSignal.timeout(45000)]) : AbortSignal.timeout(45000),
       headers: {
         Accept: 'application/json',

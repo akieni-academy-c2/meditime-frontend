@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../auth/AuthContext.jsx';
-import { api } from '../lib/api.js';
+import { api, configureSession } from '../lib/api.js';
 import GoogleButton from '../components/GoogleButton.jsx';
 import { Brand, SecurityArtwork } from '../components/Brand.jsx';
 import { AuthButton, AuthLoading, AuthNotice, CodeField, EmailField } from '../components/AuthUI.jsx';
@@ -47,7 +47,20 @@ export default function Login() {
   async function signIn(path, body) {
     if (busy) return;
     setBusy(true); setError(''); setNotice('');
-    try { acceptSession(await api(path, { method: 'POST', body })); setCode(''); }
+    try {
+      const authenticated = await api(path, { method: 'POST', body });
+      // Keep CSRF available if /me has a transient network error and login is retried.
+      configureSession(authenticated.csrfToken);
+      // Confirm the cookie is usable before entering the authenticated pages.
+      let session;
+      try { session = await api('/me'); }
+      catch (err) {
+        if (err.status === 401) throw new Error('La connexion a été validée, mais votre session n’a pas été conservée par le navigateur. Réessayez ou ouvrez MediTime directement dans Safari ou Chrome.');
+        throw err;
+      }
+      acceptSession(session);
+      setCode('');
+    }
     catch (err) {
       const googleErrors = {
         EMAIL_VERIFICATION_REQUIRED: 'Une vérification de votre adresse email est nécessaire pour lier ce compte à Google. Vous pouvez vous connecter par code email.',
