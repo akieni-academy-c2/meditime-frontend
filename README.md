@@ -10,6 +10,12 @@ npm run dev
 
 Ouvrir `http://localhost:5173/connexion`. Le port correspond aux origines CORS et Google autorisées. Les variables `VITE_API_URL` (préfixe `/api/v1` inclus) et `VITE_GOOGLE_CLIENT_ID` sont publiques. Aucun secret dans les variables `VITE_*`.
 
+En développement, `VITE_API_URL` choisit l’API locale, notamment pour la recette Gmail SMTP. Les builds de production utilisent toujours `/api/v1` sur l’origine du frontend : `vercel.json` relaie cette route vers Render avant le repli SPA. Une ancienne valeur absolue de `VITE_API_URL` dans Vercel ne peut donc pas contourner le relais ; supprimer cette variable dans les environnements Production et Preview pour éviter une configuration trompeuse. Conserver `VITE_GOOGLE_CLIENT_ID`.
+
+Le relais conserve les cookies et les en-têtes HTTP sans transformer les corps JSON. Les réponses API ne sont pas mises en cache. Le cookie HttpOnly/Secure sans Domain appartient ainsi au domaine frontend pour le navigateur, et les écritures gardent `X-CSRF-Token` et leur `Origin`. L’origine publique exacte doit rester autorisée par le backend et Google. Un domaine de preview supplémentaire nécessite aussi leur autorisation ; ne pas ouvrir les origines avec un joker.
+
+Avant publication, vérifier sur iPhone Safari, Chrome iOS et PWA installée : connexion Google, réponse `/api/v1/me` JSON 200, profil incomplet si nécessaire, accueil, rechargement et déconnexion. Les appels doivent viser le domaine frontend, pas directement Render. Inspecter `Set-Cookie`, le renvoi du cookie, `Origin`, `X-CSRF-Token` et `Cache-Control: no-store`. Une connexion validée sans session utilisable affiche une erreur sur la page de connexion. `npm run preview` seul ne reproduit pas les rewrites Vercel.
+
 ```sh
 npm run build
 npm run preview
